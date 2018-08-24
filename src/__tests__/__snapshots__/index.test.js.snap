@@ -1,0 +1,380 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`model ArrayMutator appendValue 1`] = `
+Array [
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set user_ids = array_append(array_remove(user_ids, 10), 10), keyword = name is one, updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "update model_table set user_ids = array_append(array_remove(user_ids, 20), 20), keyword = name is one, updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "update model_table set user_ids = array_append(array_remove(user_ids, 10), 10), keyword = name is one, updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "select * from model_table where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`model ArrayMutator removeValue 1`] = `
+Array [
+  "select * from model_table where id in (2) and deleted_at is null",
+  "update model_table set user_ids = array_remove(user_ids, 10), keyword = name is two, updated_by = 10, updated_at = DATE where deleted_at is null and id = 2 returning *",
+  "select * from model_table where id in (2) and deleted_at is null",
+]
+`;
+
+exports[`model Base columns object 1`] = `
+Object {
+  "createdAt": DateTimeColumn {
+    "_": Object {
+      "name": "createdAt",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "createdBy": ValueColumn {
+    "_": Object {
+      "name": "createdBy",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "data": ValueColumn {
+    "_": Object {
+      "name": "data",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "deletedAt": DateTimeColumn {
+    "_": Object {
+      "name": "deletedAt",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "deletedBy": ValueColumn {
+    "_": Object {
+      "name": "deletedBy",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "id": PrimaryKeyColumn {
+    "_": Object {
+      "name": "id",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "name": ValueColumn {
+    "_": Object {
+      "name": "name",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "nickName": ValueColumn {
+    "_": Object {
+      "name": "nickName",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "password": HashColumn {
+    "_": Object {
+      "name": "password",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "total": ValueColumn {
+    "_": Object {
+      "name": "total",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "updatedAt": DateTimeColumn {
+    "_": Object {
+      "name": "updatedAt",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "updatedBy": ValueColumn {
+    "_": Object {
+      "name": "updatedBy",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "userIds": ListColumn {
+    "_": Object {
+      "name": "userIds",
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+}
+`;
+
+exports[`model Base columns thunk 1`] = `
+Object {
+  "createdAt": DateTimeColumn {
+    "_": Object {
+      "name": undefined,
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "data": ValueColumn {
+    "_": Object {
+      "name": undefined,
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "deletedAt": DateTimeColumn {
+    "_": Object {
+      "name": undefined,
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "id": PrimaryKeyColumn {
+    "_": Object {
+      "name": undefined,
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "name": ValueColumn {
+    "_": Object {
+      "name": undefined,
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "password": HashColumn {
+    "_": Object {
+      "name": undefined,
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+  "updatedAt": DateTimeColumn {
+    "_": Object {
+      "name": undefined,
+      "serialize": [Function],
+    },
+    "enumerable": true,
+  },
+}
+`;
+
+exports[`model DefaultValues save use default values 1`] = `
+Array [
+  "insert into model_table (created_at, created_by, keyword, name, updated_at, updated_by) values (DATE, 10, DEFAULT, go car, DATE, 10) returning *",
+  "select * from model_table where id in (3) and deleted_at is null",
+]
+`;
+
+exports[`model Fetcher fetch fetch one 1`] = `
+Object {
+  "createdAt": null,
+  "createdBy": null,
+  "data": null,
+  "deletedAt": null,
+  "deletedBy": null,
+  "id": 1,
+  "keyword": null,
+  "name": "name is one",
+  "nickName": "nick name is one",
+  "password": null,
+  "total": 0,
+  "updatedAt": null,
+  "updatedBy": null,
+  "userIds": null,
+}
+`;
+
+exports[`model Fetcher fetch fetch one 2`] = `
+Array [
+  "select * from model_table where deleted_at is null and name = name is one limit 1",
+]
+`;
+
+exports[`model Fetcher fetch with where 1`] = `
+Object {
+  "createdAt": null,
+  "createdBy": null,
+  "data": null,
+  "deletedAt": null,
+  "deletedBy": null,
+  "id": 1,
+  "keyword": null,
+  "name": "name is one",
+  "nickName": "nick name is one",
+  "password": null,
+  "total": 0,
+  "updatedAt": null,
+  "updatedBy": null,
+  "userIds": null,
+}
+`;
+
+exports[`model Fetcher fetch with where 2`] = `
+Array [
+  "select * from model_table where nick_name = nick name is one and total = 0 and (name = name is one) and data IS NULL and deleted_at is null order by created_at asc limit 1",
+]
+`;
+
+exports[`model Fetcher fetchAll no cache 1`] = `
+Array [
+  "name is one",
+]
+`;
+
+exports[`model Fetcher fetchAll no cache 2`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from model_table where deleted_at is null and name = name is one",
+]
+`;
+
+exports[`model Fetcher fetchPage not set 1`] = `
+Array [
+  "name is one",
+  "name is two",
+]
+`;
+
+exports[`model Fetcher fetchPage not set 2`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from model_table where deleted_at is null",
+]
+`;
+
+exports[`model Fetcher fetchPage offset and first 1`] = `
+Array [
+  "name is two",
+]
+`;
+
+exports[`model Fetcher fetchPage offset and first 2`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from model_table where deleted_at is null limit 2 offset 1",
+]
+`;
+
+exports[`model Fetcher saveIfNotExists when existed 1`] = `
+Array [
+  "select * from model_table where deleted_at is null and name = name is one limit 1",
+]
+`;
+
+exports[`model Fetcher saveIfNotExists when not existed 1`] = `
+Array [
+  "select * from model_table where deleted_at is null and name = name is new limit 1",
+  "insert into model_table (created_at, created_by, keyword, name, updated_at, updated_by) values (DATE, 10, name is new, name is new, DATE, 10) returning *",
+]
+`;
+
+exports[`model GlobalId integer 1`] = `"invalid global id"`;
+
+exports[`model Incrementer multiple 1`] = `
+Array [
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set total = total + 10 where deleted_at is null and id = 1 returning *",
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set total = total + 10 where deleted_at is null and id = 1 returning *",
+]
+`;
+
+exports[`model Incrementer single 1`] = `
+Array [
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set total = total + 10 where deleted_at is null and id = 1 returning *",
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set total = total + 10 where deleted_at is null and id = 1 returning *",
+]
+`;
+
+exports[`model JSONMutator addKeyValue 1`] = `
+Array [
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set data = coalesce(data, '{}') || {\\"10\\":\\"xyz\\"}, keyword = name is one, updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+]
+`;
+
+exports[`model JSONMutator delKeyValue 1`] = `
+Array [
+  "select * from model_table where id in (2) and deleted_at is null",
+  "update model_table set data = coalesce(data, '{}') - 10, keyword = name is two, updated_by = 10, updated_at = DATE where deleted_at is null and id = 2 returning *",
+]
+`;
+
+exports[`model Loader no softDelete 1`] = `
+Array [
+  "insert into model_table (created_at, created_by, keyword, name, updated_at, updated_by) values (DATE, 10, for no soft delete load, for no soft delete load, DATE, 10) returning *",
+  "update model_table set deleted_at = DATE, deleted_by = 10 where deleted_at is null and id = 3 returning *",
+  "select * from model_view where id in (3)",
+]
+`;
+
+exports[`model Loader softDelete 1`] = `
+Array [
+  "select * from model_table where id in (1) and deleted_at is null",
+  "select * from model_table where id in (1, 2) and deleted_at is null",
+]
+`;
+
+exports[`model Mutator destroy has operator 1`] = `
+Array [
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set deleted_at = DATE, deleted_by = 10 where deleted_at is null and id = 1 returning *",
+]
+`;
+
+exports[`model Mutator destroy no operator and no soft delete 1`] = `
+Array [
+  "select * from model_view where id in (1)",
+  "delete from model_table where id = 1",
+]
+`;
+
+exports[`model Mutator sent insert of save has operator 1`] = `
+Array [
+  "insert into model_table (created_at, created_by, keyword, name, updated_at, updated_by) values (DATE, 10, new is insert, new is insert, DATE, 10) returning *",
+]
+`;
+
+exports[`model Mutator sent insert of save no operator 1`] = `
+Array [
+  "insert into model_table (created_at, name, updated_at) values (DATE, new is no operator insert, DATE) returning *",
+]
+`;
+
+exports[`model Mutator sent update of save has operator 1`] = `
+Array [
+  "select * from model_table where id in (1) and deleted_at is null",
+  "update model_table set name = name is update, keyword = name is update, updated_by = 20, updated_at = DATE where deleted_at is null and id = 1 returning *",
+]
+`;
+
+exports[`model Mutator sent update of save no operator 1`] = `
+Array [
+  "select * from model_view where id in (1)",
+  "update model_table set name = name is no operator update, updated_at = DATE where id = 1 returning *",
+]
+`;
+
+exports[`model Searcher search 1`] = `
+Array [
+  "new for search",
+  "new for action",
+]
+`;
+
+exports[`model Searcher search 2`] = `
+Array [
+  "insert into model_table (created_at, created_by, keyword, name, updated_at, updated_by) values (DATE, 10, new for action, new for action, DATE, 10) returning *",
+  "insert into model_table (created_at, created_by, keyword, name, updated_at, updated_by) values (DATE, 10, new for search, new for search, DATE, 10) returning *",
+  "select ts_rank(keyword, query) as rank, *, count(*) OVER() AS total_count from model_table , to_tsquery('new|search') as query where keyword @@ query and deleted_at is null order by rank desc",
+]
+`;

@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataCache check type 1`] = `
+Array [
+  "select * from car where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`DataCache clear & clearAll 1`] = `
+Array [
+  "select * from car where id in (1) and deleted_at is null",
+  "select * from car where id in (1) and deleted_at is null",
+  "select * from car where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`DataCache load & loadMany cache 1 1`] = `
+Array [
+  "select * from car where id in (1) and deleted_at is null",
+  "select * from house where id in (1) and deleted_at is null",
+  "select * from car where id in (3) and deleted_at is null",
+  "select * from house where id in (4, 2) and deleted_at is null",
+]
+`;
+
+exports[`DataCache load & loadMany cache 2 1`] = `
+Array [
+  "select * from car where id in (1) and deleted_at is null",
+  "select * from house where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`DataCache new model 1`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from car where deleted_at is null",
+]
+`;

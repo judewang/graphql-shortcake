@@ -1,0 +1,62 @@
+{
+  "name": "graphql-shortcake",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint ./src; jest --coverage ./src --forceExit",
+    "build": "rm -rf lib && babel src --ignore __tests__ --out-dir lib",
+    "prepublish": "npm run build",
+    "postpublish": "rm -rf lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmotx/graphql-shortcake.git"
+  },
+  "author": "tmotx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tmotx/graphql-shortcake/issues"
+  },
+  "homepage": "https://github.com/tmotx/graphql-shortcake#readme",
+  "files": [
+    "lib"
+  ],
+  "jest": {
+    "testEnvironment": "node",
+    "clearMocks": true,
+    "testMatch": [
+      "**/__tests__/**/?(*.)(spec|test).js?(x)"
+    ],
+    "snapshotSerializers": [
+      "<rootDir>/node_modules/jest-mock-knex/serializer"
+    ]
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-jest": "^23.4.2",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-preset-react-native": "^4.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.9.1",
+    "faker": "^4.1.0",
+    "graphql": "^0.13.2",
+    "jest": "^23.5.0",
+    "jest-mock-knex": "^1.18.0",
+    "knex": "^0.15.2",
+    "pg": "^7.4.3"
+  },
+  "dependencies": {
+    "base-x": "^3.0.4",
+    "bignumber.js": "^7.2.1",
+    "dataloader": "^1.4.0",
+    "graphql-tower-errors": "^3.39.10",
+    "lodash": "^4.17.10",
+    "thelper": "^1.2.1"
+  }
+}

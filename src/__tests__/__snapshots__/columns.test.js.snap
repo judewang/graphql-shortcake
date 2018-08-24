@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Columns fetch from postgres 1`] = `
+Array [
+  "select * from column where deleted_at is null and name = my name limit 1",
+]
+`;
