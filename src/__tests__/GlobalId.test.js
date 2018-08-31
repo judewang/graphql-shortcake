@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import GlobalId, { isGlobalId, toGlobalId, fromGlobalId } from '../GlobalId';
+import { isGlobalId, toGlobalId, fromGlobalId } from '../GlobalId';
 
 describe('GlobalId', () => {
   it('isGlobalId & toGlobalId & fromGlobalId', () => {
@@ -12,24 +12,11 @@ describe('GlobalId', () => {
       ['stardrive', 'iSABqDjWj27myTTozwJ9Zz5w5UlBV'],
       ['0f2c4ccd-eeb7-44fc-961c-6afdda24a0e7', 'iUsFHSdfuZlXILU4xFFuOOPzxKQVG99scTWB6t'],
     ], ([input, output, value]) => {
-      const gid = toGlobalId(type, input);
-      expect(isGlobalId(gid)).toBe(true);
-      expect(gid).toBe(output);
-      expect(fromGlobalId(gid, type)).toBe(value || input);
+      const globalId = toGlobalId(type, input);
+      expect(isGlobalId(globalId)).toBe(true);
+      expect(globalId).toBe(output);
+      expect(fromGlobalId(globalId, type)).toBe(value || input);
     });
-  });
-
-  it('GlobalId', () => {
-    const type = 'GlobalType';
-
-    const gid = fromGlobalId(toGlobalId(type, 9223372036854774000));
-    expect(gid.type).toBe(type);
-    expect(gid.toBigint()).toEqual('9223372036854774000');
-    expect(gid.toUUID()).toEqual('00000000-0000-0000-7fff-fffffffff8f0');
-    expect(gid.toString()).toEqual('9223372036854774000');
-    expect(gid.toJSON()).toEqual('9223372036854774000');
-
-    expect(new GlobalId('123', 'DEF').toString()).toEqual('123');
   });
 
   it('check global id', () => {

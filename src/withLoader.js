@@ -1,4 +1,5 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_dataloader"] }] */
+/* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["target"] }] */
 
 import _ from 'lodash';
 import DataLoader from 'dataloader';
@@ -31,26 +32,50 @@ export default Parent => class Loader extends Parent {
     return _.map(ids, id => (collections[id] || null));
   }
 
-  static load(id, error) {
-    const nativeId = this.fromGlobalId(id);
-
-    const promise = Promise.resolve({});
-    const next = promise.then;
-
-    return Object.assign(promise, {
-      nativeId,
-      then: (...args) => next.call(promise, () => {
-        if (!nativeId) return null;
-        return this.dataloader
-          .load(nativeId)
-          .then(data => (data ? this.forge(data) : null));
+  static load(value, error) {
+    return Promise.resolve()
+      .then(async () => {
+        const id = this.fromGlobalId(value);
+        if (!id) return null;
+        return this.dataloader.load(id);
       })
-        .then(model => assertResult(model, error))
-        .then(...args),
-    });
+      .then(data => (data ? this.forge(data) : null))
+      .then(model => assertResult(model, error));
   }
 
   static async loadMany(ids, ...args) {
     return Promise.all(_.map(ids, id => this.load(id, ...args)));
+  }
+
+  load(error) {
+    return this.constructor
+      .load(this.valueOf(), error)
+      .then(model => (model ? this.forge(model) : null));
+  }
+
+  get(name) {
+    const result = super.get(name);
+    return _.isArray(result) ? _.map(result, this.getModel.bind(this)) : this.getModel(result);
+  }
+
+  getModel(model) {
+    if (model && model instanceof Parent) {
+      const promise = Promise.resolve({});
+      const next = promise.then;
+
+      model.cache = this.cache;
+
+      const nextPromise = Object.assign(promise, {
+        then: (...args) => next
+          .call(promise, () => model.load())
+          .then(...args),
+      });
+
+      return new Proxy(nextPromise, {
+        get: (target, key) => (model[key] || target[key]),
+        set: (target, key, value) => { target[key] = value; },
+      });
+    }
+    return model;
   }
 };

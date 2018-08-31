@@ -26,7 +26,7 @@ export default Parent => class Searcher extends Parent {
   async modify(changes, ...args) {
     const { keywordAttribute, toKeyword } = this.constructor;
     if (toKeyword && _.size(changes) > 0) {
-      _.set(changes, [keywordAttribute], toKeyword({ ...this.valueOf(), ...changes }));
+      _.set(changes, [keywordAttribute], toKeyword({ ...this.values, ...changes }));
     }
     return super.modify(changes, ...args);
   }

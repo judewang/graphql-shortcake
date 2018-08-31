@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import knex, { client } from 'knex';
-import { NotFoundError } from 'graphql-tower-errors';
-import Model, { DataCache, ValueColumn, toGlobalId } from '..';
+import Model, { DataCache, toGlobalId } from '..';
 
 const database = knex({
   client: 'pg',
@@ -19,7 +18,7 @@ class Car extends Model {
   static tableName = 'car';
 
   static columns = {
-    name: new ValueColumn(),
+    name: { type: String },
   }
 }
 
@@ -29,7 +28,7 @@ class House extends Model {
   static tableName = 'house';
 
   static columns = {
-    name: new ValueColumn(),
+    name: { type: String },
   }
 }
 
@@ -85,13 +84,14 @@ describe('DataCache', () => {
     await expect(cache.load(toGlobalId('tree', '1'))).resolves.toBeNull();
 
     client.mockReturnValueOnce([]);
-    await expect(cache.load(Car.toGlobalId('1'))).resolves.toBeNull();
+    await expect(cache.load(Car.toGlobalId('1')))
+      .resolves.toBeNull();
 
-    await expect(cache.load(Car.toGlobalId('1'), NotFoundError))
-      .rejects.toEqual(new NotFoundError());
+    await expect(cache.load(Car.toGlobalId('1'), Error))
+      .rejects.toEqual(new Error());
 
-    await expect(cache.loadHouse(Car.toGlobalId('2')))
-      .rejects.toEqual(new TypeError('invalid global id'));
+    await expect(cache.loadHouse(Car.toGlobalId('2'), TypeError))
+      .rejects.toEqual(new TypeError());
 
     expect(client).toMatchSnapshot();
     expect(client).toHaveBeenCalledTimes(1);

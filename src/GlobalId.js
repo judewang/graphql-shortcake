@@ -7,45 +7,38 @@ const uuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
 const uuidParser = /^([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})$/;
 
 export default class GlobalId {
+  [Symbol.toStringTag] = 'GlobalId';
+
+  [Symbol.toPrimitive](hint) {
+    if (hint === 'number') return Number.NaN;
+    return this.toString();
+  }
+
   constructor(id, type, format = 'S') {
-    this._.id = Buffer.from(id);
-    this._.type = type;
-    this._.format = format;
+    this.id = id;
+    this.type = type;
+    this.format = format;
   }
 
-  _ = {};
+  valueOf() {
+    const { id, format } = this;
+    if (format === 'N') {
+      return new BigNumber(id.toString('hex'), 16).toString(10);
+    }
 
-  get type() {
-    return this._.type;
-  }
+    if (format === 'U') {
+      const data = uuidParser.exec(_.padStart(id.toString('hex'), 32, 0));
+      return `${data[1]}-${data[2]}-${data[3]}-${data[4]}-${data[5]}`;
+    }
 
-  get id() {
-    return this._.id;
-  }
-
-  toBigint() {
-    return new BigNumber(this.id.toString('hex'), 16).toString(10);
-  }
-
-  toUUID() {
-    const data = uuidParser.exec(_.padStart(this.id.toString('hex'), 32, 0));
-    return `${data[1]}-${data[2]}-${data[3]}-${data[4]}-${data[5]}`;
+    return id.toString();
   }
 
   toString() {
-    if (this._.format === 'N') {
-      return this.toBigint();
-    }
-
-    if (this._.format === 'U') {
-      return this.toUUID();
-    }
-
-    return this.id.toString();
-  }
-
-  toJSON() {
-    return this.toString();
+    const { id, type, format } = this;
+    const typeBuf = Buffer.from(`${type}:`);
+    const value = bs62.encode(Buffer.concat([typeBuf, id], typeBuf.length + id.length));
+    return `i${format}${value}`;
   }
 }
 
@@ -53,7 +46,20 @@ export function isGlobalId(globalId) {
   return /^i[NUS][\w\d]+$/.test(globalId);
 }
 
-function fromId(value) {
+function convertGlobalId(id) {
+  const data = bs62.decode(id.substr(2));
+  const symbol = data.indexOf(':');
+
+  const typeBuf = Buffer.allocUnsafe(symbol);
+  data.copy(typeBuf, 0, 0, symbol);
+
+  const idBuf = Buffer.allocUnsafe(data.length - symbol - 1);
+  data.copy(idBuf, 0, symbol + 1, data.length);
+
+  return { idBuf, type: typeBuf.toString() };
+}
+
+function convertId(value) {
   if (Buffer.isBuffer(value)) {
     return { format: 'S', idBuf: value };
   }
@@ -81,36 +87,33 @@ function fromId(value) {
   return { format: 'S', idBuf: Buffer.from(id) };
 }
 
-export function toGlobalId(type, id) {
-  const typeBuf = Buffer.from(`${type}:`);
-  const { format, idBuf } = fromId(id);
-  const value = bs62.encode(Buffer.concat([typeBuf, idBuf], typeBuf.length + idBuf.length));
-  return `i${format}${value}`;
+export function fromGlobalId(value, verification) {
+  if (!isGlobalId(value)) {
+    if (!/^[\w-]+$/.test(value)) throw TypeError('invalid native id');
+    return value;
+  }
+
+  const format = value[1];
+  const { idBuf, type } = convertGlobalId(value);
+
+  const globalId = new GlobalId(idBuf, type, format);
+  if (verification) {
+    if (verification !== globalId.type) {
+      throw TypeError('invalid global type');
+    }
+    return globalId.valueOf();
+  }
+  return globalId;
 }
 
-export function fromGlobalId(value, verification) {
-  try {
-    if (!isGlobalId(value)) throw new TypeError();
-
-    const buf = bs62.decode(value.substr(2));
-    const splitIdx = buf.indexOf(':');
-
-    const typeBuf = Buffer.allocUnsafe(splitIdx);
-    buf.copy(typeBuf, 0, 0, splitIdx);
-    const type = typeBuf.toString();
-
-    const idBuf = Buffer.allocUnsafe(buf.length - splitIdx - 1);
-    buf.copy(idBuf, 0, splitIdx + 1, buf.length);
-
-    const gid = new GlobalId(idBuf, type, value[1]);
-
-    if (verification) {
-      if (verification !== type) throw TypeError();
-      return gid.toString();
-    }
-
-    return gid;
-  } catch (error) {
-    throw TypeError('invalid global id');
+export function toGlobalId(type, id) {
+  if (isGlobalId(id)) {
+    const { type: verification } = convertGlobalId(id);
+    if (verification !== type) throw TypeError('invalid native id');
+    return id;
   }
+
+  const { idBuf, format } = convertId(id);
+  const globalId = new GlobalId(idBuf, type, format);
+  return globalId.toString();
 }

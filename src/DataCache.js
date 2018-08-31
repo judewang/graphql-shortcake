@@ -5,27 +5,28 @@ import { assertResult } from 'thelper';
 import { fromGlobalId } from './GlobalId';
 
 export default class DataCache {
-  static async loader(ids) {
-    return Promise.all(_.map(ids, async (id) => {
-      const gid = fromGlobalId(id);
-      const Model = this[gid.type];
+  static async loader(globalIds) {
+    return Promise.all(_.map(globalIds, async (globalId) => {
+      const id = fromGlobalId(globalId);
+      const Model = this[id.type];
       if (!Model) return null;
 
-      return Model.load(gid.toString());
+      return Model.load(`${id}`);
     }));
   }
 
   static get(target, name) {
-    if (!_.isUndefined(target[name])) return target[name];
+    const result = target[name];
+    if (!_.isUndefined(result)) return result;
 
-    if (!_.isString(name)) return undefined;
-
-    const loader = /^load(.+)$/ig.exec(name);
-    const className = _.upperFirst(loader ? loader[1] : name);
-    const Model = target.constructor[className];
-    if (Model) {
-      if (loader) return (id, error) => target.loadModel(id, error, Model);
-      return target.create(className);
+    if (_.isString(name)) {
+      const loader = /^load(.+)$/ig.exec(name);
+      const className = _.upperFirst(loader ? loader[1] : name);
+      const Model = target.constructor[className];
+      if (Model) {
+        if (loader) return (id, error) => target.loadModel(id, error, Model);
+        return target.create(className);
+      }
     }
 
     return undefined;
@@ -49,41 +50,23 @@ export default class DataCache {
   }
 
   async loadModel(key, error, Model) {
-    const id = Model.toGlobalId(key);
-    const nativeId = Model.fromGlobalId(key);
-
-    const promise = Promise.resolve({});
-    const next = promise.then;
-
-    return Object.assign(promise, {
-      id,
-      nativeId,
-      then: (resolve, rejects) => next
-        .call(promise, async () => {
-          const model = await this.load(id, error);
-          if (model && model.constructor !== Model) return null;
-          return model;
-        })
-        .then(model => assertResult(model, error))
-        .then(resolve, rejects),
-    });
+    try {
+      const id = Model.toGlobalId(key);
+      const model = await this.load(id, error);
+      return model;
+    } catch (e) {
+      return assertResult(null, error);
+    }
   }
 
   async load(id, error) {
-    const promise = Promise.resolve({});
-    const next = promise.then;
-
-    return Object.assign(promise, {
-      id,
-      then: (resolve, rejects) => next
-        .call(promise, async () => {
-          const model = await this.dataloader.load(id);
-          if (!model) return null;
-          return model.clone({ cache: this });
-        })
-        .then(model => assertResult(model, error))
-        .then(resolve, rejects),
-    });
+    try {
+      const model = await this.dataloader.load(id);
+      if (!model) throw new TypeError();
+      return model.clone({ cache: this });
+    } catch (e) {
+      return assertResult(null, error);
+    }
   }
 
   async loadMany(ids, ...args) {

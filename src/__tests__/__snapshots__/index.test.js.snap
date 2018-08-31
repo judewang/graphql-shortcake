@@ -20,150 +20,172 @@ Array [
 
 exports[`model Base columns object 1`] = `
 Object {
-  "createdAt": DateTimeColumn {
-    "_": Object {
-      "name": "createdAt",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "createdAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "createdAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "createdBy": ValueColumn {
-    "_": Object {
-      "name": "createdBy",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "createdBy": Object {
+    "isArray": false,
+    "paths": Array [
+      "createdBy",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "data": ValueColumn {
-    "_": Object {
-      "name": "data",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "data": Object {
+    "isArray": false,
+    "paths": Array [
+      "data",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "deletedAt": DateTimeColumn {
-    "_": Object {
-      "name": "deletedAt",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "deletedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "deletedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "deletedBy": ValueColumn {
-    "_": Object {
-      "name": "deletedBy",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "deletedBy": Object {
+    "isArray": false,
+    "paths": Array [
+      "deletedBy",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "id": PrimaryKeyColumn {
-    "_": Object {
-      "name": "id",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "name": Object {
+    "isArray": false,
+    "paths": Array [
+      "name",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "name": ValueColumn {
-    "_": Object {
-      "name": "name",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "nickName": Object {
+    "isArray": false,
+    "paths": Array [
+      "nickName",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "nickName": ValueColumn {
-    "_": Object {
-      "name": "nickName",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "password": Object {
+    "isArray": false,
+    "paths": Array [
+      "password",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "password": HashColumn {
-    "_": Object {
-      "name": "password",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "total": Object {
+    "isArray": false,
+    "paths": Array [
+      "total",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "total": ValueColumn {
-    "_": Object {
-      "name": "total",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "updatedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "updatedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "updatedAt": DateTimeColumn {
-    "_": Object {
-      "name": "updatedAt",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "updatedBy": Object {
+    "isArray": false,
+    "paths": Array [
+      "updatedBy",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "updatedBy": ValueColumn {
-    "_": Object {
-      "name": "updatedBy",
-      "serialize": [Function],
-    },
-    "enumerable": true,
-  },
-  "userIds": ListColumn {
-    "_": Object {
-      "name": "userIds",
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "userIds": Object {
+    "isArray": true,
+    "paths": Array [
+      "userIds",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
 }
 `;
 
 exports[`model Base columns thunk 1`] = `
 Object {
-  "createdAt": DateTimeColumn {
-    "_": Object {
-      "name": undefined,
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "createdAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "createdAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "data": ValueColumn {
-    "_": Object {
-      "name": undefined,
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "data": Object {
+    "isArray": false,
+    "paths": Array [
+      "data",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "deletedAt": DateTimeColumn {
-    "_": Object {
-      "name": undefined,
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "deletedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "deletedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "id": PrimaryKeyColumn {
-    "_": Object {
-      "name": undefined,
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "name": Object {
+    "isArray": false,
+    "paths": Array [
+      "name",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "name": ValueColumn {
-    "_": Object {
-      "name": undefined,
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "password": Object {
+    "isArray": false,
+    "paths": Array [
+      "password",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
-  "password": HashColumn {
-    "_": Object {
-      "name": undefined,
-      "serialize": [Function],
-    },
-    "enumerable": true,
-  },
-  "updatedAt": DateTimeColumn {
-    "_": Object {
-      "name": undefined,
-      "serialize": [Function],
-    },
-    "enumerable": true,
+  "updatedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "updatedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
   },
 }
 `;
@@ -275,7 +297,7 @@ Array [
 ]
 `;
 
-exports[`model GlobalId integer 1`] = `"invalid global id"`;
+exports[`model GlobalId integer 1`] = `"invalid global type"`;
 
 exports[`model Incrementer multiple 1`] = `
 Array [

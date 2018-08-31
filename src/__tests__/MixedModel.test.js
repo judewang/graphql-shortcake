@@ -1,5 +1,5 @@
 import knex from 'knex';
-import Model, { MixedModel, ValueColumn, toGlobalId } from '..';
+import Model, { MixedModel, toGlobalId } from '..';
 
 const database = knex();
 
@@ -11,7 +11,7 @@ class Product extends Model {
   static load = jest.fn();
 
   static columns = {
-    name: new ValueColumn(),
+    name: { type: String },
   }
 }
 
@@ -23,13 +23,11 @@ class Gift extends Model {
   static load = jest.fn();
 
   static columns = {
-    name: new ValueColumn(),
+    name: { type: String },
   }
 }
 
-class Target extends MixedModel {
-  static models = [Product, Gift];
-}
+const Target = new MixedModel([Product, Gift]);
 
 describe('mixed model', () => {
   describe('static', () => {
@@ -47,12 +45,6 @@ describe('mixed model', () => {
       await Target.loadMany([Product.toGlobalId('1'), Gift.toGlobalId('2')]);
       expect(Product.load).toHaveBeenCalledTimes(1);
       expect(Gift.load).toHaveBeenCalledTimes(1);
-    });
-
-    it('fromModel', () => {
-      expect(Target.fromModel(null)).toBe(null);
-      expect(Target.fromModel(new Product({ id: '10' }))).toBe(Product.toGlobalId('10'));
-      expect(Target.fromModel(Product.toGlobalId('10'))).toBe(Product.toGlobalId('10'));
     });
   });
 });

@@ -18,8 +18,8 @@ exports[`DataCache load & loadMany cache 1 1`] = `
 Array [
   "select * from car where id in (1) and deleted_at is null",
   "select * from house where id in (1) and deleted_at is null",
+  "select * from house where id in (2, 4) and deleted_at is null",
   "select * from car where id in (3) and deleted_at is null",
-  "select * from house where id in (4, 2) and deleted_at is null",
 ]
 `;
 

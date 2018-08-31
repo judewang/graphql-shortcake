@@ -1,28 +1,9 @@
-import knex, { client } from 'knex';
+import { client } from 'knex';
 import _ from 'lodash';
-import { GoneDataError } from 'graphql-tower-errors';
+import database from './database';
 import Model, {
-  ValueColumn,
-  HashColumn,
-  DateColumn,
-  DateTimeColumn,
-  ListColumn,
-  ArchiveColumn,
-  CustomColumn,
-  EnumColumn,
-  ReadOnlyColumn,
-  MixedModel,
+  Hash, DateTime, Enum, Expiratoin, MixedModel,
 } from '..';
-
-const database = knex({
-  client: 'pg',
-  connection: {
-    host: '127.0.0.1',
-    user: 'postgres',
-    password: null,
-    database: 'graphql_tower',
-  },
-});
 
 class Like {
   value = 99;
@@ -38,7 +19,7 @@ class User extends Model {
   static tableName = 'column_user';
 
   static columns = {
-    name: new ValueColumn(),
+    name: { type: String },
   }
 }
 
@@ -48,13 +29,12 @@ class Member extends Model {
   static tableName = 'column_user';
 
   static columns = {
-    name: new ValueColumn(),
+    name: { type: String },
   }
 }
 
-class Buyer extends MixedModel {
-  static models = [User, Member];
-}
+const Buyer = new MixedModel([User, Member]);
+const Size = new Enum(['large', 'medium', 'small']);
 
 class Column extends Model {
   static database = database;
@@ -62,33 +42,27 @@ class Column extends Model {
   static tableName = 'column';
 
   static columns = {
-    name: new ValueColumn(),
-    nameAlias: new ValueColumn(String, 'nameAliasNickname'),
-    total: new ValueColumn(Number),
-    isAdmin: new ValueColumn(Boolean),
-    buyer: new ValueColumn(Buyer, 'buyerId'),
-    password: new HashColumn(),
-    birthday: new DateColumn(),
-    checkAt: new DateTimeColumn(),
-    size: new EnumColumn(['large', 'medium', 'small']),
-    itemIds: new ListColumn(User),
-    archiveName: new ArchiveColumn(),
-    archiveNameAlias: new ArchiveColumn(new ValueColumn(String, 'nameAliasNickname')),
-    archiveTotal: new ArchiveColumn(new ValueColumn(Number)),
-    archiveIsAdmin: new ArchiveColumn(new ValueColumn(Boolean)),
-    archiveBuyer: new ArchiveColumn(new ValueColumn(User, 'buyerId')),
-    archivePassword: new ArchiveColumn(new HashColumn()),
-    archiveBirthday: new ArchiveColumn(new DateColumn()),
-    archiveCheckAt: new ArchiveColumn(new DateTimeColumn()),
-    archiveItems: new ArchiveColumn(new ListColumn()),
-    numberOflike: new ArchiveColumn(new ValueColumn(Number, 'Oflike'), 'other'),
-    hasSubscription: new ReadOnlyColumn(Boolean),
-    numberOfMember: new ReadOnlyColumn(() => 99),
-    nothing: new CustomColumn(),
-    enabled: new CustomColumn({
-      set: (value, data) => _.set(data, 'enabled', value),
-      get: data => (!!data.enabled),
-    }),
+    name: { type: String },
+    nameAlias: { type: String, name: 'nameAliasNickname' },
+    total: { type: Number },
+    isAdmin: { type: Boolean },
+    buyer: { type: Buyer, name: 'buyerId' },
+    password: { type: Hash },
+    birthday: { type: DateTime.Date },
+    checkAt: { type: DateTime },
+    size: { type: Size },
+    itemIds: { type: [User] },
+    enabled: { type: Expiratoin },
+    archiveName: { type: String, paths: ['archive'] },
+    archiveNameAlias: { type: String, paths: ['archive'], name: 'nameAliasNickname' },
+    archiveTotal: { type: Number, paths: ['archive'] },
+    archiveIsAdmin: { type: Boolean, paths: ['archive'] },
+    archiveBuyer: { type: User, paths: ['archive'], name: 'buyerId' },
+    archivePassword: { type: Hash, paths: ['archive'] },
+    archiveBirthday: { type: DateTime.Date, paths: ['archive'] },
+    archiveCheckAt: { type: DateTime, paths: ['archive'] },
+    archiveItems: { type: [String], paths: ['archive'] },
+    numberOflike: { type: Number, paths: ['other'], name: 'Oflike' },
   }
 }
 
@@ -110,7 +84,6 @@ describe('Columns', () => {
       table.jsonb('archive');
       table.jsonb('other');
       table.datetime('enabled');
-      table.string('nothing');
       table.timestamps();
       table.datetime('deleted_at');
     });
@@ -138,7 +111,6 @@ describe('Columns', () => {
     model.birthday = null;
     model.checkAt = null;
     model.itemIds = null;
-    model.nothing = null;
     model.size = null;
 
     expect(model.name).toBeNull();
@@ -149,14 +121,13 @@ describe('Columns', () => {
     expect(model.password).toBeNull();
     expect(model.birthday).toBeNull();
     expect(model.checkAt).toBeNull();
-    expect(model.itemIds).toEqual([]);
-    expect(model.nothing).toBeNull();
+    expect(model.itemIds).toBeNull();
     expect(model.size).toBeNull();
   });
 
   it('when model not found', async () => {
     const column = Column.forge({ archive: { buyerId: '10' } });
-    await expect(column.archiveBuyer).rejects.toEqual(new GoneDataError());
+    await expect(column.archiveBuyer).resolves.toBe(null);
   });
 
   it('save to postgres', async () => {
@@ -172,7 +143,7 @@ describe('Columns', () => {
       isAdmin: true,
       buyer: user,
       password: 'XYZ2020',
-      birthday: new Date('2020-01-01'),
+      birthday: '2020-01-01',
       checkAt: new Date('2020-04-01T10:00:00'),
       itemIds: [2, 3],
       size: 'medium',
@@ -180,14 +151,13 @@ describe('Columns', () => {
       archiveNameAlias: 'my archive nickname',
       archiveTotal: 2049,
       archiveIsAdmin: true,
-      archiveBuyer: user.nativeId,
+      archiveBuyer: user,
       archivePassword: 'XYZ2049',
       archiveBirthday: new Date('2049-01-01'),
       archiveCheckAt: new Date('2049-04-01T10:00:00'),
       archiveItems: [20, 49, 49],
       numberOflike: new Like(),
-      nothing: 'xyz',
-      enabled: new Date('2020-12-31'),
+      enabled: new Date('2010-12-31'),
     });
 
     await model.save();
@@ -198,19 +168,18 @@ describe('Columns', () => {
     const model = new Column({ name: 'my name' });
     await model.fetch();
     expect(client).toMatchSnapshot();
-
     expect(model.id).toBe(Column.toGlobalId('1'));
     expect(model.name).toBe('my name');
     expect(model.nameAlias).toBe('my nickname');
     expect(model.total).toBe(2020);
     expect(model.isAdmin).toBe(true);
-    expect(model.buyer.nativeId).toBe('1');
-    expect((await model.buyer).valueOf()).toEqual(expect.objectContaining({ id: 1, name: 'I`m user' }));
+    expect(model.buyer.valueOf()).toBe('iN2I0oUUhtxVJpJ8Siv3');
     expect(model.password).not.toBeNull();
-    expect(model.birthday).toBe('2020-01-01');
-    expect(model.checkAt).toEqual(new Date('2020-04-01T10:00:00'));
-    expect(model.size).toBe('medium');
-    expect(_.map(model.itemIds, ({ nativeId }) => nativeId)).toEqual([2, 3]);
+    expect(`${model.birthday}`).toBe('2020-01-01');
+    expect(new Date(model.checkAt)).toEqual(new Date('2020-04-01T10:00:00'));
+    expect(`${model.size}`).toBe('medium');
+    expect(_.map(model.itemIds, _.toString)).toEqual(['iN2I0oUUhtxVJpJ8Siv4', 'iN2I0oUUhtxVJpJ8Siv5']);
+    expect(_.map(model.itemIds, 'nativeId')).toEqual(['2', '3']);
     expect(Promise.all(model.itemIds)).resolves.toEqual([
       expect.objectContaining({ id: User.toGlobalId('2') }),
       expect.objectContaining({ id: User.toGlobalId('3') }),
@@ -220,25 +189,21 @@ describe('Columns', () => {
     expect(model.archiveNameAlias).toBe('my archive nickname');
     expect(model.archiveTotal).toBe(2049);
     expect(model.archiveIsAdmin).toBe(true);
-    expect(model.archiveBuyer.nativeId).toBe(1);
-    expect((await model.archiveBuyer).valueOf()).toEqual(expect.objectContaining({ id: 1, name: 'I`m user' }));
+    expect(model.archiveBuyer.nativeId).toBe('1');
+    expect((await model.archiveBuyer).name).toEqual('I`m user');
     expect(model.archivePassword).not.toBeNull();
-    expect(model.archiveBirthday).toBe('2049-01-01');
-    expect(model.archiveCheckAt).toEqual(new Date('2049-04-01T10:00:00'));
+    expect(`${model.archiveBirthday}`).toBe('2049-01-01');
+    expect(new Date(model.archiveCheckAt)).toEqual(new Date('2049-04-01T10:00:00'));
     expect(model.archiveItems).toEqual(['20', '49', '49']);
 
-    expect(model.nothing).toBe('xyz');
-    expect(model.enabled).toBe(true);
+    expect(Boolean(model.enabled)).toBe(true);
 
-    expect(model.verify('password', 'XYZ2020')).toBe(true);
-    expect(model.verify('password', 'XYZ1010')).toBe(false);
-    expect(model.verify('archivePassword', 'XYZ2049')).toBe(true);
-    expect(model.verify('archivePassword', 'XYZ1010')).toBe(false);
+    expect(model.password.verify('XYZ2020')).toBe(true);
+    expect(model.password.verify('XYZ1010')).toBe(false);
+    expect(model.archivePassword.verify('XYZ2049')).toBe(true);
+    expect(model.archivePassword.verify('XYZ1010')).toBe(false);
 
     expect(model.numberOflike).toBe(99);
-    expect(model.hasSubscription).toBeNull();
-    model._.current.hasSubscription = true;
-    expect(model.hasSubscription).toBe(true);
 
     expect(model.createdAt).not.toBeNull();
     expect(model.updatedAt).not.toBeNull();

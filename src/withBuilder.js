@@ -12,13 +12,11 @@ export default (Parent) => {
       return this.database(this.tableName);
     }
 
-    constructor(...args) {
-      super(...args);
-      _.assign(this._, {
-        builderTasks: [],
-        offset: null,
-        limit: null,
-      });
+    initialize() {
+      super.initialize();
+      this._.builderTasks = [];
+      this._.offset = null;
+      this._.limit = null;
     }
 
     limit(value) {
@@ -45,11 +43,11 @@ export default (Parent) => {
       _.forEach(_.get(this._, ['builderTasks']), ([key, args]) => {
         sql[key](...args);
       });
-      _.set(this._, ['builderTasks'], []);
+      this._.builderTasks = [];
 
       if (softDelete) sql.whereNull('deleted_at');
 
-      const values = this.valueOf();
+      const { values } = this;
       const id = values[idAttribute];
       if (id) return sql.where(_.snakeCase(idAttribute), id);
 
@@ -107,7 +105,6 @@ export default (Parent) => {
       const { mutate, signify } = this.constructor;
       const [row] = await mutate.insert(signify(values), '*');
       assertResult(row, error);
-
       return row ? this.merge(row) : null;
     }
 
@@ -116,7 +113,6 @@ export default (Parent) => {
       const { mutate } = this;
       const [row] = await mutate.update(signify(changes)).returning('*');
       assertResult(row, error);
-
       return row ? this.merge(row) : null;
     }
 

@@ -1,11 +1,22 @@
 /* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["target"] }] */
-/* eslint no-underscore-dangle: ["error", { "allow": ["_columns", "__columns"] }] */
-
 import _ from 'lodash';
-import { thunk } from 'thelper';
-import { PrimaryKeyColumn, DateTimeColumn, ValueColumn } from './columns';
+import fp from 'lodash/fp';
+import withArrayMutator from './withArrayMutator';
+import withBuilder from './withBuilder';
+import withBatch from './withBatch';
+import withCache from './withCache';
+import withColumn from './withColumn';
+import withDefaultValues from './withDefaultValues';
+import withFetcher from './withFetcher';
+import withGlobalId from './withGlobalId';
+import withHash from './withHash';
+import withIncrementer from './withIncrementer';
+import withJSONMutator from './withJSONMutator';
+import withLoader from './withLoader';
+import withMutator from './withMutator';
+import withSearcher from './withSearcher';
 
-export default class Model {
+class Model {
   static database = null;
 
   static tableName = null;
@@ -20,13 +31,20 @@ export default class Model {
 
   static softDelete = true;
 
-  static _columns = thunk({});
-
   static get(target, name) {
+    if (this.has(target, name)) {
+      return target.get(name);
+    }
+
     return target[name];
   }
 
   static set(target, name, value) {
+    if (this.has(target, name)) {
+      target.set(name, value);
+      return;
+    }
+
     target[name] = value;
   }
 
@@ -34,36 +52,20 @@ export default class Model {
     return this.name;
   }
 
-  static set columns(columns) {
-    this._columns = thunk(columns);
+  static has(target, name) {
+    return target.ownKeys.indexOf(name) > -1;
   }
 
-  static get columns() {
-    if (this.__columns) return this.__columns;
+  static ownKeys(target) {
+    return target.ownKeys;
+  }
 
-    const columns = this._columns();
+  static getOwnPropertyDescriptor(target, name) {
+    if (this.has(target, name)) {
+      return { configurable: true, enumerable: true, value: target.get(name) };
+    }
 
-    const {
-      idAttribute, hasOperator, hasTimestamps, softDelete,
-    } = this;
-
-    this.__columns = _.defaults(
-      columns,
-      _.set({}, idAttribute, new PrimaryKeyColumn()),
-      hasTimestamps && {
-        createdAt: new DateTimeColumn(),
-        updatedAt: new DateTimeColumn(),
-      }, softDelete && {
-        deletedAt: new DateTimeColumn(),
-      }, hasOperator && hasTimestamps && {
-        createdBy: new ValueColumn(),
-        updatedBy: new ValueColumn(),
-      }, hasOperator && softDelete && {
-        deletedBy: new ValueColumn(),
-      },
-    );
-
-    return this.__columns;
+    return Object.getOwnPropertyDescriptor(target, name);
   }
 
   static refreshView = _.debounce(() => {
@@ -72,19 +74,6 @@ export default class Model {
 
   static raw(...args) {
     return this.database.raw(...args);
-  }
-
-  static format(data) {
-    return _.mapKeys(data, (value, key) => _.camelCase(key));
-  }
-
-  static signify(column) {
-    if (_.isPlainObject(column)) {
-      return _.mapKeys(column, (value, key) => _.snakeCase(key));
-    }
-    if (_.isArray(column)) return _.map(column, _.snakeCase);
-    if (_.isString(column)) return _.snakeCase(column);
-    return column;
   }
 
   static forge(attributes, options) {
@@ -103,27 +92,25 @@ export default class Model {
     return this.fromModel(operator);
   }
 
-  _ = {
-    current: {},
-    previous: {},
+  [Symbol.toStringTag] = 'Model';
+
+  [Symbol.toPrimitive](hint) {
+    if (hint === 'number') return Number.NaN;
+    return this.toString();
   }
 
-  constructor(attrs) {
-    const { columns, get, set } = this.constructor;
+  constructor() {
+    if (this.initialize) this.initialize();
+    const handler = _.pick(this.constructor, [
+      'get', 'set', 'has', 'ownKeys', 'getOwnPropertyDescriptor',
+    ]);
+    return new Proxy(this, handler);
+  }
 
-    const properties = _.mapValues(columns, (column, name) => {
-      if (!column.name) column.name = name; // eslint-disable-line
-      return {
-        enumerable: column.enumerable,
-        set: value => column.set(value, this._.current, this),
-        get: () => column.get(this._.current, this),
-      };
-    });
-    Object.defineProperties(this, properties);
-
-    if (attrs) this.set(attrs);
-
-    return new Proxy(this, { get, set });
+  initialize() {
+    this._ = {};
+    this.current = {};
+    this.previous = {};
   }
 
   get isNew() {
@@ -131,44 +118,68 @@ export default class Model {
     return !this[idAttribute];
   }
 
-  get nativeId() {
-    const { idAttribute } = this.constructor;
-    return this.valueOf(idAttribute);
+  get values() {
+    return { ...this.previous, ...this.current };
+  }
+
+  get(paths) {
+    const { values } = this;
+    return _.get(values, paths, null);
+  }
+
+  set(paths, value) {
+    _.set(this.current, paths, value);
   }
 
   valueOf(name) {
-    const values = { ...this.previous, ...this._.current };
-    if (name) return values[name];
-    return values;
+    if (name) return _.get(this.current, [name], this.previous[name]);
+
+    const { idAttribute } = this.constructor;
+    const id = this.valueOf(idAttribute);
+    return id ? String(id) : id;
   }
 
-  set(data) {
-    const { columns } = this.constructor;
-    _.forEach(data, (value, key) => {
-      if (columns[key] && value !== undefined) this[key] = value;
-    });
-    return this;
+  toString() {
+    const { idAttribute } = this.constructor;
+    return this[idAttribute];
   }
 
   clone(options) {
     const model = new this.constructor({}, options);
-    model._.current = _.cloneDeep(this._.current);
-    model._.previous = this._.previous;
+    model.current = _.cloneDeep(this.current);
+    model.previous = this.previous;
     return model;
   }
 
   forge(attributes) {
-    const attrs = _.get(attributes, ['_', 'previous'], attributes);
-    this._.current = _.cloneDeep(attrs);
-    this._.previous = attrs;
+    const attrs = _.get(attributes, ['previous'], attributes);
+    this.current = _.cloneDeep(attrs);
+    this.previous = attrs;
     return this;
   }
 
   merge(attributes) {
     const { format } = this.constructor;
     const values = format(attributes);
-    _.forEach([this._.current, this._.previous], data => _.assign(data, values));
+    _.forEach([this.current, this.previous], data => _.assign(data, values));
 
     return this;
   }
 }
+
+export default fp.compose(
+  withArrayMutator,
+  withJSONMutator,
+  withIncrementer,
+  withSearcher,
+  withDefaultValues,
+  withCache,
+  withLoader,
+  withFetcher,
+  withMutator,
+  withBatch,
+  withHash,
+  withBuilder,
+  withColumn,
+  withGlobalId,
+)(Model);

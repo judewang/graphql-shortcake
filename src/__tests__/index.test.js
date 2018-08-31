@@ -1,21 +1,7 @@
-import knex, { client } from 'knex';
+import { client } from 'knex';
 import _ from 'lodash';
-import faker from 'faker';
-import { NotFoundError } from 'graphql-tower-errors';
-import Model, {
-  ValueColumn, HashColumn, ListColumn,
-  toGlobalId, fromGlobalId,
-} from '..';
-
-const database = knex({
-  client: 'pg',
-  connection: {
-    host: '127.0.0.1',
-    user: 'postgres',
-    password: null,
-    database: 'graphql_tower',
-  },
-});
+import database from './database';
+import Model, { Hash, toGlobalId, fromGlobalId } from '..';
 
 class MainModel extends Model {
   static database = database;
@@ -31,12 +17,12 @@ class MainModel extends Model {
   }
 
   static columns = {
-    name: new ValueColumn(),
-    nickName: new ValueColumn(),
-    password: new HashColumn(),
-    userIds: new ListColumn(),
-    data: new ValueColumn(Object),
-    total: new ValueColumn(Number),
+    name: { type: String },
+    nickName: { type: String },
+    password: { type: Hash },
+    userIds: { type: [String] },
+    data: { type: Object },
+    total: { type: Number },
   }
 }
 
@@ -50,12 +36,12 @@ class ViewModel extends MainModel {
   static toKeyword = null;
 
   static columns = {
-    name: new ValueColumn(),
-    nickName: new ValueColumn(),
-    password: new HashColumn(),
-    userIds: new ListColumn(),
-    data: new ValueColumn(Object),
-    total: new ValueColumn(Number),
+    name: { type: String },
+    nickName: { type: String, name: 'xxzz' },
+    password: { type: Hash },
+    userIds: { type: [String], name: ['archive'] },
+    data: { type: Object },
+    total: { type: Number },
   }
 }
 
@@ -151,7 +137,7 @@ describe('model', () => {
 
       it('forge', () => {
         const model = MainModel.forge({ name: 'my name' });
-        expect(model.valueOf()).toEqual({ name: 'my name' });
+        expect(model.values).toEqual({ name: 'my name' });
       });
 
       it('fromModel', () => {
@@ -167,7 +153,7 @@ describe('model', () => {
         const { columns } = MainModel;
         expect(_.keys(columns)).toEqual([
           'name', 'nickName', 'password',
-          'userIds', 'data', 'total', 'id',
+          'userIds', 'data', 'total',
           'createdAt', 'updatedAt', 'deletedAt',
           'createdBy', 'updatedBy', 'deletedBy',
         ]);
@@ -181,14 +167,14 @@ describe('model', () => {
           static tableName = 'model_table';
 
           static columns = () => ({
-            name: new ValueColumn(),
-            password: new HashColumn(),
-            data: new ValueColumn(Object),
+            name: { type: String },
+            password: { type: Hash },
+            data: { type: Object },
           })
         }
         const { columns } = Thunk;
         expect(_.keys(columns)).toEqual([
-          'name', 'password', 'data', 'id',
+          'name', 'password', 'data',
           'createdAt', 'updatedAt', 'deletedAt',
         ]);
         expect(columns).toMatchSnapshot();
@@ -198,9 +184,9 @@ describe('model', () => {
     describe('prototype', () => {
       it('set', () => {
         const model = new MainModel({ name: 'isme', price: 99, total: undefined });
-        expect(model.valueOf()).toEqual({ name: 'isme' });
+        expect(model.values).toEqual({ name: 'isme', total: null });
         model.set({ name: 'new name', price: 99, total: undefined });
-        expect(model.valueOf()).toEqual({ name: 'new name' });
+        expect(model.values).toEqual({ name: 'new name', total: null });
       });
 
       it('isNew', () => {
@@ -231,7 +217,7 @@ describe('model', () => {
       it('nativeId', async () => {
         const model = await MainModel.load(1);
         expect(model.id).toBe('iNe9OVLx9dUZwc9SxLDFCEkGEj');
-        expect(model.nativeId).toBe(1);
+        expect(model.nativeId).toBe('1');
       });
 
       it('clone', async () => {
@@ -240,21 +226,21 @@ describe('model', () => {
 
         const replica = model.clone();
         expect(model).toEqual(replica);
-        expect(model._.previous).toBe(replica._.previous);
-        expect(model._.current).not.toBe(replica._.current);
+        expect(model.previous).toBe(replica.previous);
+        expect(model.current).not.toBe(replica.current);
 
-        expect(model.valueOf()).toEqual(replica.valueOf());
+        expect(model.values).toEqual(replica.values);
         replica.name = 'new model clone';
-        expect(model.valueOf()).not.toEqual(replica.valueOf());
+        expect(model.values).not.toEqual(replica.values);
       });
 
       it('merge', async () => {
         const model = await MainModel.load(1);
-        expect(model.valueOf())
+        expect(model.values)
           .toEqual(expect.objectContaining({ name: 'name is one' }));
         model.merge({ name: 'a name', archive: { items: [20, 40] } });
-        expect(model._.previous).toEqual(expect.objectContaining({ name: 'a name' }));
-        expect(model._.current).toEqual(expect.objectContaining({ name: 'a name' }));
+        expect(model.previous).toEqual(expect.objectContaining({ name: 'a name' }));
+        expect(model.current).toEqual(expect.objectContaining({ name: 'a name' }));
       });
     });
   });
@@ -299,7 +285,7 @@ describe('model', () => {
       static tableName = 'batch_insert';
 
       static columns = {
-        name: new ValueColumn(),
+        name: { type: String },
       }
     }
 
@@ -311,7 +297,7 @@ describe('model', () => {
       static tableName = 'batch_insert';
 
       static columns = {
-        name: new ValueColumn(),
+        name: { type: String },
       }
     }
 
@@ -382,13 +368,13 @@ describe('model', () => {
       it('fetch one', async () => {
         const model = new MainModel({ name: 'name is one', data: { xyz: 1 } });
         await model.fetch();
-        expect(model.valueOf()).toMatchSnapshot();
+        expect(model.values).toMatchSnapshot();
         expect(client).toMatchSnapshot();
 
         await expect((new MainModel({ name: 'one' })).fetch())
           .resolves.toEqual(null);
-        await expect((new MainModel({ name: 'one' })).fetch(NotFoundError))
-          .rejects.toEqual(new NotFoundError());
+        await expect((new MainModel({ name: 'one' })).fetch(Error))
+          .rejects.toEqual(new Error());
       });
 
       it('with where', async () => {
@@ -399,20 +385,20 @@ describe('model', () => {
         model.orderBy(['createdAt']);
         model.whereRaw('data IS NULL');
         await model.fetch();
-        expect(model.valueOf()).toMatchSnapshot();
+        expect(model.values).toMatchSnapshot();
         expect(client).toMatchSnapshot();
       });
     });
 
     describe('saveIfNotExists', () => {
       it('when existed', async () => {
-        expect((await new MainModel({ name: 'name is one' }).saveIfNotExists()).nativeId).toBe(1);
+        expect((await new MainModel({ name: 'name is one' }).saveIfNotExists()).nativeId).toBe('1');
         expect(client).toMatchSnapshot();
         expect(client).toHaveBeenCalledTimes(1);
       });
 
       it('when not existed', async () => {
-        expect((await new MainModel({ name: 'name is new' }).saveIfNotExists('10')).nativeId).toBe(3);
+        expect((await new MainModel({ name: 'name is new' }).saveIfNotExists('10')).nativeId).toBe('3');
         expect(client).toMatchSnapshot();
         expect(client).toHaveBeenCalledTimes(2);
       });
@@ -429,8 +415,8 @@ describe('model', () => {
 
         await expect((new MainModel({ name: 'one' })).fetchAll())
           .resolves.toEqual(Object.assign([], { totalCount: 0, offset: null, limit: null }));
-        await expect((new MainModel({ name: 'one' })).fetchAll(NotFoundError))
-          .rejects.toEqual(new NotFoundError());
+        await expect((new MainModel({ name: 'one' })).fetchAll(Error))
+          .rejects.toEqual(new Error());
       });
 
       it('cache', async () => {
@@ -467,8 +453,8 @@ describe('model', () => {
 
       it('fetch 0', async () => {
         const model = new MainModel({ name: 'name is XYZ' });
-        await expect(model.fetchCount(NotFoundError))
-          .rejects.toEqual(new NotFoundError());
+        await expect(model.fetchCount(Error))
+          .rejects.toEqual(new Error());
       });
     });
   });
@@ -491,19 +477,12 @@ describe('model', () => {
         static hasUUID = true;
 
         static columns = {
-          name: new ValueColumn(),
+          name: { type: String },
         }
       }
 
       expect(UUID.toGlobalId('131d069a-8b6e-45d1-af3b-c25c598e06be')).toBe('iUoGyNJVqL88oyTqyk8qPQooAkDN6s');
       expect(UUID.fromGlobalId('iUoGyNJVqL88oyTqyk8qPQooAkDN6s')).toBe('131d069a-8b6e-45d1-af3b-c25c598e06be');
-
-      expect(() => UUID.fromGlobalId(toGlobalId('UUID', '2020'))).toThrowError(new TypeError());
-    });
-
-    it('isUUID', () => {
-      expect(MainModel.isUUID(faker.random.uuid())).toBe(true);
-      expect(MainModel.isUUID('XYZ')).toBe(false);
     });
   });
 
@@ -511,8 +490,8 @@ describe('model', () => {
     it('hash & verify', async () => {
       const model = await MainModel.load(1);
       model.password = 'XYZ2020';
-      expect(model.verify('password', 'XYZ2020')).toBe(true);
-      expect(model.verify('password', 'XYZ2049')).toBe(false);
+      expect(model.password.verify('XYZ2020')).toBe(true);
+      expect(model.password.verify('XYZ2049')).toBe(false);
     });
   });
 
@@ -543,12 +522,10 @@ describe('model', () => {
         .resolves.toEqual(null);
       await expect(MainModel.load(99, Error))
         .rejects.toEqual(new Error());
-      await expect(MainModel.load(99, NotFoundError))
-        .rejects.toEqual(new NotFoundError());
       await expect(MainModel.loadMany([99]))
         .resolves.toEqual([null]);
-      await expect(MainModel.loadMany([99], NotFoundError))
-        .rejects.toEqual(new NotFoundError());
+      await expect(MainModel.loadMany([99], Error))
+        .rejects.toEqual(new Error());
     });
 
     it('no softDelete', async () => {
@@ -617,9 +594,9 @@ describe('model', () => {
     describe('sent insert of save', () => {
       it('has operator', async () => {
         const model = new MainModel({ name: 'new is insert' });
-        expect(model.valueOf()).toEqual({ name: 'new is insert' });
+        expect(model.values).toEqual({ name: 'new is insert' });
         await model.save(10);
-        expect(model.valueOf()).toEqual(expect.objectContaining({
+        expect(model.values).toEqual(expect.objectContaining({
           createdAt: expect.anything(Date),
           createdBy: 10,
           updatedAt: expect.anything(Date),
@@ -634,7 +611,7 @@ describe('model', () => {
       it('no operator', async () => {
         const model = new ViewModel({ name: 'new is no operator insert' });
         await model.save();
-        expect(model.valueOf()).toEqual(expect.objectContaining({
+        expect(model.values).toEqual(expect.objectContaining({
           createdAt: expect.anything(Date),
           createdBy: null,
           updatedAt: expect.anything(Date),

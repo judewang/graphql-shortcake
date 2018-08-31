@@ -2,12 +2,8 @@ import _ from 'lodash';
 
 export default Parent => class Mutator extends Parent {
   get changes() {
-    const data = _.omitBy(
-      this.valueOf(),
-      (value, key) => _.isEqual(this._.previous[key], value),
-    );
-
-    return data;
+    const filter = (value, key) => _.isEqual(this.previous[key], value);
+    return _.omitBy(this.values, filter);
   }
 
   async add(values, operator) {
@@ -43,7 +39,7 @@ export default Parent => class Mutator extends Parent {
   }
 
   async save(operator) {
-    if (this.isNew) return this.add(this.valueOf(), operator);
+    if (this.isNew) return this.add(this.values, operator);
     return this.modify(this.changes, operator);
   }
 
