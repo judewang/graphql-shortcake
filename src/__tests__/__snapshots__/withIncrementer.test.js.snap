@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Incrementer multiple 1`] = `
+Array [
+  "select * from incrementer where id in (2) and deleted_at is null",
+  "update incrementer set total = total + 10 where deleted_at is null and id = 2 returning *",
+  "select * from incrementer where id in (2) and deleted_at is null",
+  "update incrementer set total = total + -5 where deleted_at is null and id = 2 returning *",
+]
+`;
+
+exports[`Incrementer single 1`] = `
+Array [
+  "select * from incrementer where id in (1) and deleted_at is null",
+  "update incrementer set total = total + 10 where deleted_at is null and id = 1 returning *",
+  "select * from incrementer where id in (1) and deleted_at is null",
+  "update incrementer set total = total + -5 where deleted_at is null and id = 1 returning *",
+]
+`;

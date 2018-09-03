@@ -52,7 +52,6 @@ export default Parent => class Mutator extends Parent {
   async destroy(operator) {
     const { softDelete } = this.constructor;
     const by = this.constructor.checkOperator(operator);
-
     if (!softDelete) return this.delete();
 
     if (this.valueOf('deletedBy')) return this;

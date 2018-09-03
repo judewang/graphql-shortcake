@@ -17,9 +17,10 @@ export default Parent => class Fetcher extends Parent {
     return results;
   }
 
-  async fetchPage({ offset, first } = {}, error) {
-    if (!_.isNil(offset)) this.offset(offset);
-    if (!_.isNil(first)) this.limit(first);
+  async fetchPage(options, error) {
+    const { offset, first } = _.defaults(options, { offset: 0, first: 1000 });
+    this.offset(offset);
+    this.limit(first);
     return this.fetchAll(error);
   }
 

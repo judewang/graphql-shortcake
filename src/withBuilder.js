@@ -104,16 +104,14 @@ export default (Parent) => {
     async insert(values, error) {
       const { mutate, signify } = this.constructor;
       const [row] = await mutate.insert(signify(values), '*');
-      assertResult(row, error);
-      return row ? this.merge(row) : null;
+      return assertResult(this.merge(row), error);
     }
 
     async update(changes, error) {
       const { signify } = this.constructor;
       const { mutate } = this;
       const [row] = await mutate.update(signify(changes)).returning('*');
-      assertResult(row, error);
-      return row ? this.merge(row) : null;
+      return assertResult(this.merge(row), error);
     }
 
     async delete() {

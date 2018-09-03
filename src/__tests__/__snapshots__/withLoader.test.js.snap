@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loader load 1`] = `
+Array [
+  "select * from loader where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`Loader loadMany 1`] = `
+Array [
+  "select * from loader where id in (1, 2) and deleted_at is null",
+]
+`;
+
+exports[`Loader when soft delete 1`] = `
+Array [
+  "select * from loader where id in (1) and deleted_at is null",
+  "update loader set deleted_at = DATE, deleted_by = 10 where deleted_at is null and id = 1 returning *",
+  "select * from loader where id in (1) and deleted_at is null",
+]
+`;

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Batch update successfully update 1`] = `
+Array [
+  Cache {
+    "id": "iN7SNGO2W5Lur62xxuaxN",
+    "name": "cupcake",
+  },
+  Cache {
+    "id": "iN7SNGO2W5Lur62xxuaxP",
+    "name": "cupcake",
+  },
+  Cache {
+    "id": "iN7SNGO2W5Lur62xxuaxR",
+    "name": "cupcake",
+  },
+]
+`;
+
+exports[`Batch update successfully update with operator 1`] = `
+Array [
+  Batch {
+    "createdAt": null,
+    "createdBy": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "id": "iN7LVv4xt1nXZSS0N6Y0v",
+    "name": "tiramisu",
+    "updatedAt": "[object DateTime]",
+    "updatedBy": "99",
+  },
+  Batch {
+    "createdAt": null,
+    "createdBy": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "id": "iN7LVv4xt1nXZSS0N6Y0x",
+    "name": "tiramisu",
+    "updatedAt": "[object DateTime]",
+    "updatedBy": "99",
+  },
+  Batch {
+    "createdAt": null,
+    "createdBy": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "id": "iN7LVv4xt1nXZSS0N6Y0z",
+    "name": "tiramisu",
+    "updatedAt": "[object DateTime]",
+    "updatedBy": "99",
+  },
+]
+`;

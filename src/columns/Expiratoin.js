@@ -1,4 +1,6 @@
-export default class Expiratoin {
+import Column from './Column';
+
+export default class Expiratoin extends Column {
   [Symbol.toStringTag] = 'Expiratoin';
 
   [Symbol.toPrimitive](hint) {
@@ -7,14 +9,11 @@ export default class Expiratoin {
   }
 
   constructor(value) {
-    this.value = new Date(value);
-  }
-
-  valueOf() {
-    return this.value;
+    super(new Date(value));
   }
 
   toString() {
-    return this.value.getTime() < Date.now();
+    const result = this.value.getTime() < Date.now();
+    return result || this.value.toISOString();
   }
 }

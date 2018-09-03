@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["target"] }] */
 import _ from 'lodash';
 import fp from 'lodash/fp';
+import { invokeNull } from 'thelper';
 import withArrayMutator from './withArrayMutator';
 import withBuilder from './withBuilder';
 import withBatch from './withBatch';
@@ -9,7 +10,6 @@ import withColumn from './withColumn';
 import withDefaultValues from './withDefaultValues';
 import withFetcher from './withFetcher';
 import withGlobalId from './withGlobalId';
-import withHash from './withHash';
 import withIncrementer from './withIncrementer';
 import withJSONMutator from './withJSONMutator';
 import withLoader from './withLoader';
@@ -152,18 +152,21 @@ class Model {
   }
 
   forge(attributes) {
-    const attrs = _.get(attributes, ['previous'], attributes);
-    this.current = _.cloneDeep(attrs);
-    this.previous = attrs;
-    return this;
+    return invokeNull((attrs) => {
+      const values = _.get(attrs, ['previous'], attrs);
+      this.current = _.cloneDeep(values);
+      this.previous = values;
+      return this;
+    }, attributes);
   }
 
   merge(attributes) {
-    const { format } = this.constructor;
-    const values = format(attributes);
-    _.forEach([this.current, this.previous], data => _.assign(data, values));
-
-    return this;
+    return invokeNull((attrs) => {
+      const { format } = this.constructor;
+      const values = format(attrs);
+      _.forEach([this.current, this.previous], data => _.assign(data, values));
+      return this;
+    }, attributes);
   }
 }
 
@@ -178,7 +181,6 @@ export default fp.compose(
   withFetcher,
   withMutator,
   withBatch,
-  withHash,
   withBuilder,
   withColumn,
   withGlobalId,

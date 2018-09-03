@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Mutator destroy has operator 1`] = `
+Array [
+  "select * from mutator where id in (1) and deleted_at is null",
+  "update mutator set deleted_at = DATE, deleted_by = 10 where deleted_at is null and id = 1 returning *",
+]
+`;
+
+exports[`Mutator destroy no operator 1`] = `
+Array [
+  "insert into mutator (name) values (new logger) returning *",
+  "update mutator set deleted_at = DATE where deleted_at is null and id = 3 returning *",
+]
+`;
+
+exports[`Mutator destroy no operator and no soft delete 1`] = `
+Array [
+  "select * from mutator where id in (2)",
+  "delete from mutator where id = 2",
+]
+`;
+
+exports[`Mutator sent insert of save has operator 1`] = `
+Array [
+  "insert into mutator (created_at, created_by, name, updated_at, updated_by) values (DATE, 10, new is insert, DATE, 10) returning *",
+]
+`;
+
+exports[`Mutator sent insert of save no operator 1`] = `
+Array [
+  "insert into mutator (name) values (new is no operator insert) returning *",
+]
+`;
+
+exports[`Mutator sent update of save has operator 1`] = `
+Array [
+  "select * from mutator where id in (1) and deleted_at is null",
+  "update mutator set name = name is update, updated_by = 20, updated_at = DATE where deleted_at is null and id = 1 returning *",
+]
+`;
+
+exports[`Mutator sent update of save no operator 1`] = `
+Array [
+  "select * from mutator where id in (2)",
+  "update mutator set name = name is no operator update where id = 2 returning *",
+]
+`;

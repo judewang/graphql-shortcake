@@ -1,8 +1,8 @@
-/* eslint class-methods-use-this: ["error", { "exceptMethods": ["toString"] }] */
 import _ from 'lodash';
 import crypto from 'crypto';
+import Column from './Column';
 
-export default class Hash {
+export default class Hash extends Column {
   [Symbol.toStringTag] = 'Hash';
 
   [Symbol.toPrimitive](hint) {
@@ -11,22 +11,12 @@ export default class Hash {
   }
 
   constructor(value) {
-    if (/[\da-f]+:[\da-f]+/.test(value)) {
-      this.value = value;
-      return;
-    }
+    super(value);
+    if (/[\da-f]+:[\da-f]+/.test(value)) return;
 
     const salt = crypto.randomBytes(8);
     const password = crypto.pbkdf2Sync(value, salt, 8727, 512, 'sha512');
     this.value = `${salt.toString('hex')}:${password.toString('hex')}`;
-  }
-
-  valueOf() {
-    return this.value;
-  }
-
-  toString() {
-    return 'hash';
   }
 
   verify(value) {

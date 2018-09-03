@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fetcher fetch fetch one 1`] = `
+Object {
+  "createdAt": null,
+  "createdBy": null,
+  "data": null,
+  "deletedAt": null,
+  "deletedBy": null,
+  "id": 1,
+  "name": "pineapple shortcake",
+  "updatedAt": null,
+  "updatedBy": null,
+}
+`;
+
+exports[`Fetcher fetch fetch one 2`] = `
+Array [
+  "select * from fetcher where deleted_at is null and name = pineapple shortcake limit 1",
+]
+`;
+
+exports[`Fetcher fetch with where 1`] = `Object {}`;
+
+exports[`Fetcher fetch with where 2`] = `
+Array [
+  "select * from fetcher where name = shortcake and data IS NULL and deleted_at is null order by created_at asc limit 1",
+]
+`;
+
+exports[`Fetcher fetchAll successfully fetch 1`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from fetcher where deleted_at is null and name = shortcake",
+]
+`;
+
+exports[`Fetcher fetchCount successfully fetch 1`] = `
+Array [
+  "select count(*) from fetcher where deleted_at is null and name = pineapple shortcake",
+]
+`;
+
+exports[`Fetcher fetchPage not set 1`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from fetcher where deleted_at is null limit 1000",
+]
+`;
+
+exports[`Fetcher fetchPage offset and first 1`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from fetcher where deleted_at is null limit 2 offset 1",
+]
+`;
+
+exports[`Fetcher saveIfNotExists when existed 1`] = `
+Array [
+  "select * from fetcher where deleted_at is null and name = pineapple shortcake limit 1",
+]
+`;
+
+exports[`Fetcher saveIfNotExists when not existed 1`] = `
+Array [
+  "select * from fetcher where deleted_at is null and name = shortcake limit 1",
+  "insert into fetcher (created_at, created_by, name, updated_at, updated_by) values (DATE, 10, shortcake, DATE, 10) returning *",
+]
+`;

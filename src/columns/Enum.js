@@ -1,4 +1,6 @@
-export class Enum {
+import Column from './Column';
+
+export class Enum extends Column {
   [Symbol.toStringTag] = 'Enum';
 
   [Symbol.toPrimitive](hint) {
@@ -7,17 +9,11 @@ export class Enum {
   }
 
   constructor(value) {
-    if (typeof value === 'number') {
-      this.value = value;
-      return;
-    }
+    super(value);
+    if (typeof value === 'number') return;
 
     const { items } = this.constructor;
     this.value = items.indexOf(value);
-  }
-
-  valueOf() {
-    return this.value;
   }
 
   toString() {

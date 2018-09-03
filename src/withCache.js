@@ -1,5 +1,6 @@
 /* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["target"] }] */
 import _ from 'lodash';
+import { invokeNull } from 'thelper';
 
 export default Parent => class Cache extends Parent {
   static get(target, name) {
@@ -25,10 +26,17 @@ export default Parent => class Cache extends Parent {
     if (this.cache) {
       return this.cache
         .loadModel(this.valueOf(), error, this.constructor)
-        .then(model => (model ? this.forge(model) : null));
+        .then(invokeNull(this.forge.bind(this)));
     }
 
     return super.load(error);
+  }
+
+  clone(options) {
+    const model = super.clone(_.defaults(options, {
+      cache: this.cache,
+    }));
+    return model;
   }
 
   prime() {

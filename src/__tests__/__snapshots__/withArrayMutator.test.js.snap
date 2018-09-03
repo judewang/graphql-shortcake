@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ArrayMutator appendValue 1`] = `
+Array [
+  "select * from arraymutator where id in (1) and deleted_at is null",
+  "update arraymutator set user_ids = array_append(array_remove(user_ids, 10), 10), updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "update arraymutator set user_ids = array_append(array_remove(user_ids, 20), 20), updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "update arraymutator set user_ids = array_append(array_remove(user_ids, 10), 10), updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "select * from arraymutator where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`ArrayMutator removeValue 1`] = `
+Array [
+  "select * from arraymutator where id in (2) and deleted_at is null",
+  "update arraymutator set user_ids = array_remove(user_ids, 10), updated_by = 10, updated_at = DATE where deleted_at is null and id = 2 returning *",
+  "select * from arraymutator where id in (2) and deleted_at is null",
+]
+`;

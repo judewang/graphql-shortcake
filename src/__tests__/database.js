@@ -10,6 +10,6 @@ export default knex({
     host: '127.0.0.1',
     user: 'postgres',
     password: null,
-    database: 'graphql_tower',
+    database: 'graphql_shortcake',
   },
 });

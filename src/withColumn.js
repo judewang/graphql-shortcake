@@ -112,8 +112,6 @@ export default Parent => class Column extends Parent {
     if (name === idAttribute) return this.id;
 
     const { columns } = this;
-    if (!columns[name]) return undefined;
-
     const { toType, paths } = columns[name];
     const value = super.get(paths);
 
@@ -124,18 +122,19 @@ export default Parent => class Column extends Parent {
   set(name, data) {
     if (typeof name === 'object') {
       _.forEach(name, (value, key) => { this.set(key, value); });
-      return;
+      return this;
     }
 
     const { idAttribute } = this.constructor;
     if (name === idAttribute) {
       this.id = data;
-      return;
+      return this;
     }
 
     const { columns } = this;
-    if (!columns[name]) return;
+    if (!columns[name]) return this;
     const { toValue, paths } = columns[name];
     super.set(paths, _.isNil(data) ? null : toValue(data));
+    return this;
   }
 };

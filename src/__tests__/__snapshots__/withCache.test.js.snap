@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cache DataCache clear & clearAll 1`] = `
+Array [
+  "select * from cache_fruit where id in (1) and deleted_at is null",
+  "select * from cache_fruit where id in (1) and deleted_at is null",
+  "select * from cache_fruit where id in (2) and deleted_at is null",
+  "select * from cache_fruit where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`Cache load & loadMany check type 1`] = `Array []`;
+
+exports[`Cache load & loadMany successfully model load 1`] = `
+Array [
+  "select * from cache_fruit where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`Cache load & loadMany successfully use cache 1 1`] = `
+Array [
+  Fruit {
+    "createdAt": null,
+    "deletedAt": null,
+    "id": "iN7nPzjYQrQ4JQT3RnINV",
+    "name": "banana",
+    "updatedAt": null,
+  },
+  Airplane {
+    "createdAt": null,
+    "deletedAt": null,
+    "id": "iN8DeCoTu6HHRFcD2CVEWxUp8",
+    "name": "Airbus A330",
+    "updatedAt": null,
+  },
+  Array [
+    Fruit {
+      "createdAt": null,
+      "deletedAt": null,
+      "id": "iN7nPzjYQrQ4JQT3RnINX",
+      "name": "apple",
+      "updatedAt": null,
+    },
+    Airplane {
+      "createdAt": null,
+      "deletedAt": null,
+      "id": "iN8DeCoTu6HHRFcD2CVEWxUp7",
+      "name": "Airbus A380",
+      "updatedAt": null,
+    },
+    null,
+  ],
+]
+`;
+
+exports[`Cache load & loadMany successfully use cache 1 2`] = `
+Array [
+  "select * from cache_fruit where id in (1) and deleted_at is null",
+  "select * from cache_airplane where id in (1) and deleted_at is null",
+  "select * from cache_airplane where id in (2, 4) and deleted_at is null",
+  "select * from cache_fruit where id in (3) and deleted_at is null",
+]
+`;
+
+exports[`Cache load & loadMany successfully use cache 2 1`] = `
+Array [
+  "select * from cache_fruit where id in (1) and deleted_at is null",
+  "select * from cache_airplane where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`Cache update cache destroy 1`] = `
+Array [
+  "select * from cache_fruit where id in (4) and deleted_at is null",
+  "update cache_fruit set deleted_at = DATE where deleted_at is null and id = 4 returning *",
+  "select * from cache_fruit where id in (4) and deleted_at is null",
+]
+`;
+
+exports[`Cache update cache find 1`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from cache_fruit where deleted_at is null",
+]
+`;
+
+exports[`Cache update cache insert 1`] = `
+Array [
+  "insert into cache_fruit (created_at, name, updated_at) values (DATE, lemon, DATE) returning *",
+]
+`;
+
+exports[`Cache update cache update 1`] = `
+Array [
+  "select * from cache_fruit where id in (4) and deleted_at is null",
+  "update cache_fruit set name = lichee, updated_at = DATE where deleted_at is null and id = 4 returning *",
+]
+`;

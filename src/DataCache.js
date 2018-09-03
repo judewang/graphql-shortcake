@@ -4,92 +4,91 @@ import DataLoader from 'dataloader';
 import { assertResult } from 'thelper';
 import { fromGlobalId } from './GlobalId';
 
-export default class DataCache {
+class DataCache {
   static async loader(globalIds) {
     return Promise.all(_.map(globalIds, async (globalId) => {
       const id = fromGlobalId(globalId);
-      const Model = this[id.type];
+
+      const Model = this.models[id.type];
       if (!Model) return null;
 
-      return Model.load(`${id}`);
+      const model = await Model.load(id.valueOf());
+      if (!model) return null;
+
+      return { Model, data: model.previous };
     }));
   }
 
   static get(target, name) {
-    const result = target[name];
-    if (!_.isUndefined(result)) return result;
-
-    if (_.isString(name)) {
-      const loader = /^load(.+)$/ig.exec(name);
-      const className = _.upperFirst(loader ? loader[1] : name);
-      const Model = target.constructor[className];
-      if (Model) {
-        if (loader) return (id, error) => target.loadModel(id, error, Model);
-        return target.create(className);
-      }
+    const loader = /^load(.+)$/ig.exec(String(name));
+    const className = _.upperFirst(loader ? loader[1] : name);
+    const Model = target.get(className);
+    if (Model) {
+      if (loader) return (id, error) => target.loadModel(id, error, Model);
+      return target.create(className);
     }
 
-    return undefined;
-  }
-
-  static set(target, name, value) {
-    target[name] = value;
+    return target[name];
   }
 
   dataloader = null;
 
   constructor() {
-    const { loader, get, set } = this.constructor;
-
+    const { loader, get } = this.constructor;
     this.dataloader = new DataLoader(
       loader.bind(this.constructor),
       { cacheMap: new Map() },
     );
 
-    return new Proxy(this, { get, set });
+    return new Proxy(this, { get });
   }
 
   async loadModel(key, error, Model) {
     try {
       const id = Model.toGlobalId(key);
-      const model = await this.load(id, error);
-      return model;
+      return this.load(id, error);
     } catch (e) {
       return assertResult(null, error);
     }
   }
 
   async load(id, error) {
-    try {
-      const model = await this.dataloader.load(id);
-      if (!model) throw new TypeError();
-      return model.clone({ cache: this });
-    } catch (e) {
-      return assertResult(null, error);
-    }
+    return Promise.resolve()
+      .then(async () => {
+        const result = await this.dataloader.load(id);
+        if (!result) return null;
+
+        const { Model, data } = result;
+        const model = new Model({}, { cache: this });
+        model.forge(data);
+        return model;
+      })
+      .then(model => assertResult(model, error));
   }
 
   async loadMany(ids, ...args) {
     return Promise.all(_.map(ids, id => this.load(id, ...args)));
   }
 
+  get(name) {
+    const { models } = this.constructor;
+    return models[name];
+  }
+
   create(name) {
-    const Model = this.constructor[name];
+    const Model = this.get(name);
     const model = new Model({}, { cache: this });
     return model;
   }
 
-  prime(id, newModel) {
+  prime(id, model) {
     const { dataloader } = this;
 
-    const gid = fromGlobalId(id);
-    if (!this.constructor[gid.type]) return this;
-
-    dataloader.clear(id);
-    if (newModel) {
-      dataloader.prime(id, newModel);
-      _.set(newModel, 'cache', this);
-    }
+    dataloader.prime(id, {
+      Model: model.constructor,
+      data: model.previous,
+    });
+    _.set(model, 'cache', this);
 
     return this;
   }
@@ -104,3 +103,7 @@ export default class DataCache {
     return this;
   }
 }
+
+export default models => class DataCacheModels extends DataCache {
+  static models = _.mapKeys(models, 'displayName');
+};

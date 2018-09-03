@@ -14,7 +14,7 @@ export default class GlobalId {
     return this.toString();
   }
 
-  constructor(id, type, format = 'S') {
+  constructor(id, type, format) {
     this.id = id;
     this.type = type;
     this.format = format;

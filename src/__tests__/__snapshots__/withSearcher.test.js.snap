@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Searcher insert 1`] = `
+Array [
+  "insert into searcher (created_at, keyword, name, updated_at) values (DATE, green tea pudding, green tea pudding, DATE) returning *",
+  "insert into searcher (created_at, keyword, name, updated_at) values (DATE, cheese cake, cheese cake, DATE) returning *",
+  "insert into searcher (created_at, keyword, name, updated_at) values (DATE, green tea pie, green tea pie, DATE) returning *",
+  "insert into searcher (created_at, keyword, name, updated_at) values (DATE, american cheese cake, american cheese cake, DATE) returning *",
+  "insert into searcher (created_at, keyword, name, updated_at) values (DATE, pumpkin pie, pumpkin pie, DATE) returning *",
+]
+`;

@@ -3,7 +3,7 @@
 
 import _ from 'lodash';
 import DataLoader from 'dataloader';
-import { assertResult } from 'thelper';
+import { assertResult, invokeMap } from 'thelper';
 
 export default Parent => class Loader extends Parent {
   static get dataloader() {
@@ -54,28 +54,24 @@ export default Parent => class Loader extends Parent {
   }
 
   get(name) {
-    const result = super.get(name);
-    return _.isArray(result) ? _.map(result, this.getModel.bind(this)) : this.getModel(result);
-  }
+    return invokeMap((model) => {
+      if (model && model instanceof Parent) {
+        const promise = Promise.resolve({});
+        const next = promise.then;
 
-  getModel(model) {
-    if (model && model instanceof Parent) {
-      const promise = Promise.resolve({});
-      const next = promise.then;
+        model.cache = this.cache;
 
-      model.cache = this.cache;
+        const nextPromise = Object.assign(promise, {
+          then: (...args) => next
+            .call(promise, () => model.load())
+            .then(...args),
+        });
 
-      const nextPromise = Object.assign(promise, {
-        then: (...args) => next
-          .call(promise, () => model.load())
-          .then(...args),
-      });
-
-      return new Proxy(nextPromise, {
-        get: (target, key) => (model[key] || target[key]),
-        set: (target, key, value) => { target[key] = value; },
-      });
-    }
-    return model;
+        return new Proxy(nextPromise, {
+          get: (target, key) => (model[key] || target[key]),
+        });
+      }
+      return model;
+    }, super.get(name));
   }
 };

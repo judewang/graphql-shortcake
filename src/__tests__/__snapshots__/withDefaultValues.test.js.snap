@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DefaultValues save use default values 1`] = `
+Array [
+  "insert into fetcher (created_at, created_by, name, updated_at, updated_by) values (DATE, 10, go car, DATE, 10) returning *",
+]
+`;

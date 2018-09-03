@@ -1,0 +1,389 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Column columns object 1`] = `
+Object {
+  "aAlias": Object {
+    "isArray": false,
+    "paths": Array [
+      "aliasName",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aArchive": Object {
+    "isArray": false,
+    "paths": Array [
+      "archive",
+      "aArchive",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aArchiveAlias": Object {
+    "isArray": false,
+    "paths": Array [
+      "archive",
+      "aliasName",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aArchiveModel": Object {
+    "isArray": false,
+    "paths": Array [
+      "archive",
+      "aArchiveModel",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aArray": Object {
+    "isArray": true,
+    "paths": Array [
+      "aArray",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aArrayModel": Object {
+    "isArray": true,
+    "paths": Array [
+      "aArrayModel",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aBoolean": Object {
+    "isArray": false,
+    "paths": Array [
+      "aBoolean",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aDate": Object {
+    "isArray": false,
+    "paths": Array [
+      "aDate",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aDatetime": Object {
+    "isArray": false,
+    "paths": Array [
+      "aDatetime",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aEnum": Object {
+    "isArray": false,
+    "paths": Array [
+      "aEnum",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aExpiratoin": Object {
+    "isArray": false,
+    "paths": Array [
+      "aExpiratoin",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aHash": Object {
+    "isArray": false,
+    "paths": Array [
+      "aHash",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aMixedModel": Object {
+    "isArray": false,
+    "paths": Array [
+      "mixedModelId",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aModel": Object {
+    "isArray": false,
+    "paths": Array [
+      "modelId",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aNumber": Object {
+    "isArray": false,
+    "paths": Array [
+      "aNumber",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aOtherPath": Object {
+    "isArray": false,
+    "paths": Array [
+      "other",
+      "aOtherPath",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "aString": Object {
+    "isArray": false,
+    "paths": Array [
+      "aString",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "createdAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "createdAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "createdBy": Object {
+    "isArray": false,
+    "paths": Array [
+      "createdBy",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "deletedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "deletedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "deletedBy": Object {
+    "isArray": false,
+    "paths": Array [
+      "deletedBy",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "updatedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "updatedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "updatedBy": Object {
+    "isArray": false,
+    "paths": Array [
+      "updatedBy",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+}
+`;
+
+exports[`Column columns thunk 1`] = `
+Object {
+  "createdAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "createdAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "data": Object {
+    "isArray": false,
+    "paths": Array [
+      "data",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "deletedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "deletedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "name": Object {
+    "isArray": false,
+    "paths": Array [
+      "name",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "password": Object {
+    "isArray": false,
+    "paths": Array [
+      "password",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+  "updatedAt": Object {
+    "isArray": false,
+    "paths": Array [
+      "updatedAt",
+    ],
+    "toType": [Function],
+    "toValue": [Function],
+    "type": [Function],
+  },
+}
+`;
+
+exports[`Column fetch from postgres 1`] = `
+Column {
+  "aAlias": "cherry",
+  "aArchive": "coconut",
+  "aArchiveAlias": "grape",
+  "aArchiveModel": User {
+    "then": [Function],
+  },
+  "aArray": Array [
+    "avocado",
+    "banana",
+  ],
+  "aArrayModel": Array [
+    User {
+      "then": [Function],
+    },
+  ],
+  "aBoolean": true,
+  "aDate": "[object DateTime.Date]",
+  "aDatetime": "[object DateTime]",
+  "aEnum": "medium",
+  "aExpiratoin": true,
+  "aHash": "[object Hash]",
+  "aMixedModel": MixedModel {
+    "id": "iN2I0oUUhtxVJpJ8Siv3",
+  },
+  "aModel": User {
+    "then": [Function],
+  },
+  "aNumber": 99,
+  "aOtherPath": 20,
+  "aString": "apple",
+  "createdAt": "[object DateTime]",
+  "createdBy": "10",
+  "deletedAt": null,
+  "deletedBy": null,
+  "id": "iNUoiN3rDinQUv1eySGlvu",
+  "updatedAt": "[object DateTime]",
+  "updatedBy": "10",
+}
+`;
+
+exports[`Column save to postgres 1`] = `
+Column {
+  "aAlias": "cherry",
+  "aArchive": "coconut",
+  "aArchiveAlias": "grape",
+  "aArchiveModel": User {
+    "then": [Function],
+  },
+  "aArray": Array [
+    "avocado",
+    "banana",
+  ],
+  "aArrayModel": Array [
+    User {
+      "then": [Function],
+    },
+  ],
+  "aBoolean": true,
+  "aDate": "[object DateTime.Date]",
+  "aDatetime": "[object DateTime]",
+  "aEnum": "medium",
+  "aExpiratoin": true,
+  "aHash": "[object Hash]",
+  "aMixedModel": MixedModel {
+    "id": "iN2I0oUUhtxVJpJ8Siv3",
+  },
+  "aModel": User {
+    "then": [Function],
+  },
+  "aNumber": 99,
+  "aOtherPath": 20,
+  "aString": "apple",
+  "createdAt": "[object DateTime]",
+  "createdBy": "10",
+  "deletedAt": null,
+  "deletedBy": null,
+  "id": "iNUoiN3rDinQUv1eySGlvu",
+  "updatedAt": "[object DateTime]",
+  "updatedBy": "10",
+}
+`;
+
+exports[`Column when value is null 1`] = `
+Column {
+  "aAlias": null,
+  "aArchive": null,
+  "aArchiveAlias": null,
+  "aArchiveModel": null,
+  "aArray": null,
+  "aArrayModel": null,
+  "aBoolean": null,
+  "aDate": null,
+  "aDatetime": null,
+  "aEnum": null,
+  "aExpiratoin": null,
+  "aHash": null,
+  "aMixedModel": null,
+  "aModel": null,
+  "aNumber": null,
+  "aOtherPath": null,
+  "aString": null,
+  "createdAt": null,
+  "createdBy": null,
+  "deletedAt": null,
+  "deletedBy": null,
+  "id": "iNUoiN3rDinQUv1eySGlvt",
+  "updatedAt": null,
+  "updatedBy": null,
+}
+`;

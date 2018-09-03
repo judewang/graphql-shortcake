@@ -1,17 +1,19 @@
 /* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["target"] }] */
 import _ from 'lodash';
+import Column from './Column';
 
-export class ShortcakeDate {
+export class ShortcakeDate extends Column {
+  [Symbol.toStringTag] = 'DateTime.Date';
+
   constructor(value) {
+    super(new Date(value));
+
     const date = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
     if (date) {
       this.value = new Date(Date.UTC(
         Number(date[1]), Number(date[2]) - 1, Number(date[3]), 0, 0, 0,
       ));
-      return;
     }
-
-    this.value = new Date(value);
   }
 
   valueOf() {
@@ -24,36 +26,32 @@ export class ShortcakeDate {
   toString() {
     return this.valueOf();
   }
+
+  toJSON() {
+    return toString.call(this);
+  }
 }
 
-export class ShortcakeTime {
+export class ShortcakeTime extends Column {
 }
 
-export default class DateTime {
+export default class DateTime extends Column {
   static Date = ShortcakeDate;
 
   static Time = ShortcakeTime;
 
+  static get = (target, name) => (target[name] || target.get(name));
+
   [Symbol.toStringTag] = 'DateTime';
 
-  [Symbol.toPrimitive](hint) {
-    return this.value[Symbol.toPrimitive](hint);
-  }
-
   constructor(date) {
-    this.value = new Date(date);
-    return new Proxy(this, {
-      get(target, name) {
-        const result = target[name];
-        return result || target.value[name];
-      },
-      set(target, name, value) {
-        target.value[name] = value;
-      },
-    });
+    super(new Date(date));
+
+    const { get } = this.constructor;
+    return new Proxy(this, { get });
   }
 
-  valueOf() {
-    return this.value;
+  get(name) {
+    return this.value[name];
   }
 }
