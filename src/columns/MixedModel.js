@@ -1,8 +1,16 @@
 import _ from 'lodash';
 import { assertResult } from 'thelper';
-import { fromGlobalId, isGlobalId } from './GlobalId';
+import Column from './Column';
+import { fromGlobalId } from '../GlobalId';
 
-export class MixedModelHandler {
+class MixedModel extends Column {
+  [Symbol.toStringTag] = 'MixedModel';
+
+  [Symbol.toPrimitive](hint) {
+    if (hint === 'number') return Number.NaN;
+    return this.toString();
+  }
+
   static async load(value, error) {
     const { models } = this;
     return Promise.resolve()
@@ -20,23 +28,23 @@ export class MixedModelHandler {
     return Promise.all(_.map(ids, id => this.load(id, ...args)));
   }
 
+  static toGlobalId = _.identity;
+
+  get id() {
+    return this.valueOf();
+  }
+
   constructor(model) {
-    if (model && model.id) {
-      this.id = model.id;
-    } else if (isGlobalId(model)) {
-      this.id = model;
-    }
+    super(_.get(model, ['id'], model));
   }
 
-  valueOf() {
+  forge = _.identity;
+
+  toString() {
     return this.id;
-  }
-
-  load(error) {
-    return this.constructor.load(this.id, error);
   }
 }
 
-export default models => class MixedModel extends MixedModelHandler {
+export default models => class MixedModelItems extends MixedModel {
   static models = _.mapKeys(models, model => model.displayName);
 };

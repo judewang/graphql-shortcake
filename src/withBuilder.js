@@ -14,7 +14,7 @@ export default (Parent) => {
 
     initialize() {
       super.initialize();
-      this._.builderTasks = [];
+      this.builderTasks = [];
       this._.offset = null;
       this._.limit = null;
     }
@@ -40,10 +40,10 @@ export default (Parent) => {
         idAttribute, keywordAttribute, signify, softDelete,
       } = this.constructor;
 
-      _.forEach(_.get(this._, ['builderTasks']), ([key, args]) => {
+      _.forEach(this.builderTasks, ([key, args]) => {
         sql[key](...args);
       });
-      this._.builderTasks = [];
+      this.builderTasks = [];
 
       if (softDelete) sql.whereNull('deleted_at');
 
@@ -124,7 +124,7 @@ export default (Parent) => {
     'select', 'joinRaw', 'whereRaw', 'orderByRaw',
   ], (key) => {
     Builder.prototype[key] = function queryBuilderRaw(...args) {
-      this._.builderTasks.push([key, args]);
+      this.builderTasks.push([key, args]);
       return this;
     };
   });
@@ -138,7 +138,7 @@ export default (Parent) => {
     'orderBy',
   ], (key) => {
     Builder.prototype[key] = function queryBuilder(column, ...args) {
-      this._.builderTasks.push([key, [this.constructor.signify(column), ...args]]);
+      this.builderTasks.push([key, [this.constructor.signify(column), ...args]]);
       return this;
     };
   });

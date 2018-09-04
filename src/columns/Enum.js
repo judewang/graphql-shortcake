@@ -1,6 +1,6 @@
 import Column from './Column';
 
-export class Enum extends Column {
+class Enum extends Column {
   [Symbol.toStringTag] = 'Enum';
 
   [Symbol.toPrimitive](hint) {

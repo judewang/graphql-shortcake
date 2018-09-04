@@ -24,7 +24,7 @@ class DataCache {
     const className = _.upperFirst(loader ? loader[1] : name);
     const Model = target.get(className);
     if (Model) {
-      if (loader) return (id, error) => target.loadModel(id, error, Model);
+      if (loader) return (id, error) => target.loadModel(Model, id, error);
       return target.create(className);
     }
 
@@ -43,10 +43,9 @@ class DataCache {
     return new Proxy(this, { get });
   }
 
-  async loadModel(key, error, Model) {
+  async loadModel(Model, id, error) {
     try {
-      const id = Model.toGlobalId(key);
-      return this.load(id, error);
+      return this.load(Model.toGlobalId(id), error);
     } catch (e) {
       return assertResult(null, error);
     }

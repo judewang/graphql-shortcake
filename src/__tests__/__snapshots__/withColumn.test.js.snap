@@ -280,17 +280,13 @@ Column {
   "aAlias": "cherry",
   "aArchive": "coconut",
   "aArchiveAlias": "grape",
-  "aArchiveModel": User {
-    "then": [Function],
-  },
+  "aArchiveModel": "iN2I0oUUhtxVJpJ8Siv3",
   "aArray": Array [
     "avocado",
     "banana",
   ],
   "aArrayModel": Array [
-    User {
-      "then": [Function],
-    },
+    "iN2I0oUUhtxVJpJ8Siv3",
   ],
   "aBoolean": true,
   "aDate": "[object DateTime.Date]",
@@ -298,12 +294,8 @@ Column {
   "aEnum": "medium",
   "aExpiratoin": true,
   "aHash": "[object Hash]",
-  "aMixedModel": MixedModel {
-    "id": "iN2I0oUUhtxVJpJ8Siv3",
-  },
-  "aModel": User {
-    "then": [Function],
-  },
+  "aMixedModel": "iN2I0oUUhtxVJpJ8Siv3",
+  "aModel": "iN2I0oUUhtxVJpJ8Siv3",
   "aNumber": 99,
   "aOtherPath": 20,
   "aString": "apple",
@@ -322,17 +314,13 @@ Column {
   "aAlias": "cherry",
   "aArchive": "coconut",
   "aArchiveAlias": "grape",
-  "aArchiveModel": User {
-    "then": [Function],
-  },
+  "aArchiveModel": "iN2I0oUUhtxVJpJ8Siv3",
   "aArray": Array [
     "avocado",
     "banana",
   ],
   "aArrayModel": Array [
-    User {
-      "then": [Function],
-    },
+    "iN2I0oUUhtxVJpJ8Siv3",
   ],
   "aBoolean": true,
   "aDate": "[object DateTime.Date]",
@@ -340,12 +328,8 @@ Column {
   "aEnum": "medium",
   "aExpiratoin": true,
   "aHash": "[object Hash]",
-  "aMixedModel": MixedModel {
-    "id": "iN2I0oUUhtxVJpJ8Siv3",
-  },
-  "aModel": User {
-    "then": [Function],
-  },
+  "aMixedModel": "iN2I0oUUhtxVJpJ8Siv3",
+  "aModel": "iN2I0oUUhtxVJpJ8Siv3",
   "aNumber": 99,
   "aOtherPath": 20,
   "aString": "apple",

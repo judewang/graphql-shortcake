@@ -1,6 +1,6 @@
 /* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["target"] }] */
 import _ from 'lodash';
-import { invokeNull } from 'thelper';
+import { invokeMap } from 'thelper';
 
 export default Parent => class Cache extends Parent {
   static get(target, name) {
@@ -20,16 +20,6 @@ export default Parent => class Cache extends Parent {
   initialize() {
     super.initialize();
     this.cache = null;
-  }
-
-  load(error) {
-    if (this.cache) {
-      return this.cache
-        .loadModel(this.valueOf(), error, this.constructor)
-        .then(invokeNull(this.forge.bind(this)));
-    }
-
-    return super.load(error);
   }
 
   clone(options) {
@@ -70,5 +60,38 @@ export default Parent => class Cache extends Parent {
     const result = await super.destroy(...args);
     this.clear();
     return result;
+  }
+
+  async loadModel(Model, id, error) {
+    if (this.cache) {
+      return this.cache.loadModel(Model, id, error);
+    }
+    return Model.load(id, error);
+  }
+
+  get(name) {
+    return invokeMap((model) => {
+      if (model && model.forge) {
+        const promise = Promise.resolve({});
+        const next = promise.then;
+
+        model.cache = this.cache;
+
+        const nextPromise = Object.assign(promise, {
+          toJSON() { return model.toString(); },
+          then: (...args) => next
+            .call(promise, async () => {
+              const data = await this.loadModel(model.constructor, model.id);
+              return model.forge(data);
+            })
+            .then(...args),
+        });
+
+        return new Proxy(nextPromise, {
+          get(target, key) { return model[key] || target[key]; },
+        });
+      }
+      return model;
+    }, super.get(name));
   }
 };

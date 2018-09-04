@@ -41,6 +41,14 @@ describe('Searcher', () => {
     expect(client).toHaveBeenCalledTimes(5);
   });
 
+  it('update', async () => {
+    const searcher = await Searcher.load(4);
+    searcher.name = 'apple cheese cake';
+    await searcher.save();
+    expect(client).toMatchSnapshot();
+    expect(client).toHaveBeenCalledTimes(2);
+  });
+
   it('search', async () => {
     const model = new Searcher();
     model.search('green pie');

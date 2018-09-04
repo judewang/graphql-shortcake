@@ -15,19 +15,19 @@ export default Parent => class Searcher extends Parent {
     return this;
   }
 
-  async add(values, ...args) {
+  async insert(values, ...args) {
     const { keywordAttribute, toKeyword } = this.constructor;
     if (toKeyword) {
       _.set(values, [keywordAttribute], toKeyword(values));
     }
-    return super.add(values, ...args);
+    return super.insert(values, ...args);
   }
 
-  async modify(changes, ...args) {
+  async update(changes, ...args) {
     const { keywordAttribute, toKeyword } = this.constructor;
-    if (toKeyword && _.size(changes) > 0) {
+    if (toKeyword) {
       _.set(changes, [keywordAttribute], toKeyword({ ...this.values, ...changes }));
     }
-    return super.modify(changes, ...args);
+    return super.update(changes, ...args);
   }
 };

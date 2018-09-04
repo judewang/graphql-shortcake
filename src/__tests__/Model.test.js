@@ -100,5 +100,11 @@ describe('model', () => {
       expect(model.previous).toEqual(expect.objectContaining({ name: 'lichee' }));
       expect(model.current).toEqual(expect.objectContaining({ name: 'lichee' }));
     });
+
+    it('toString', async () => {
+      const model = await MainModel.load(1);
+      expect(Number(model)).toBe(Number.NaN);
+      expect(String(model)).toBe(MainModel.toGlobalId('1'));
+    });
   });
 });

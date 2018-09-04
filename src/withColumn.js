@@ -1,6 +1,6 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_columns"] }] */
 import _ from 'lodash';
-import { thunk, assertResult } from 'thelper';
+import { thunk, assertResult, invokeNull } from 'thelper';
 import { DateTime } from './columns';
 
 const bindType = (Type) => {
@@ -23,8 +23,7 @@ export default Parent => class Column extends Parent {
       return _.mapKeys(column, (value, key) => _.snakeCase(key));
     }
     if (_.isArray(column)) return _.map(column, _.snakeCase);
-    if (_.isString(column)) return _.snakeCase(column);
-    return column;
+    return _.snakeCase(column);
   }
 
   static _columns = thunk({});
@@ -58,7 +57,7 @@ export default Parent => class Column extends Parent {
       const Type = type[0] || type;
       const isArray = _.isArray(type);
       const toType = bindType(Type);
-      const toValue = value => (_.isNil(value) ? null : toType(value).valueOf());
+      const toValue = value => invokeNull(v => toType(v).valueOf(), value);
 
       return {
         type: Type,
@@ -134,7 +133,7 @@ export default Parent => class Column extends Parent {
     const { columns } = this;
     if (!columns[name]) return this;
     const { toValue, paths } = columns[name];
-    super.set(paths, _.isNil(data) ? null : toValue(data));
+    super.set(paths, invokeNull(toValue, data));
     return this;
   }
 };

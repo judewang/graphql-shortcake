@@ -3,7 +3,7 @@
 
 import _ from 'lodash';
 import DataLoader from 'dataloader';
-import { assertResult, invokeMap } from 'thelper';
+import { assertResult } from 'thelper';
 
 export default Parent => class Loader extends Parent {
   static get dataloader() {
@@ -39,39 +39,11 @@ export default Parent => class Loader extends Parent {
         if (!id) return null;
         return this.dataloader.load(id);
       })
-      .then(data => (data ? this.forge(data) : null))
+      .then(data => this.forge(data))
       .then(model => assertResult(model, error));
   }
 
   static async loadMany(ids, ...args) {
     return Promise.all(_.map(ids, id => this.load(id, ...args)));
-  }
-
-  load(error) {
-    return this.constructor
-      .load(this.valueOf(), error)
-      .then(model => (model ? this.forge(model) : null));
-  }
-
-  get(name) {
-    return invokeMap((model) => {
-      if (model && model instanceof Parent) {
-        const promise = Promise.resolve({});
-        const next = promise.then;
-
-        model.cache = this.cache;
-
-        const nextPromise = Object.assign(promise, {
-          then: (...args) => next
-            .call(promise, () => model.load())
-            .then(...args),
-        });
-
-        return new Proxy(nextPromise, {
-          get: (target, key) => (model[key] || target[key]),
-        });
-      }
-      return model;
-    }, super.get(name));
   }
 };

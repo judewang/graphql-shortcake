@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { client } from 'knex';
 import database from './database';
-import Model, { DataCache, toGlobalId } from '..';
+import Model, { DataCache, MixedModel, toGlobalId } from '..';
 
 class Fruit extends Model {
   static database = database;
@@ -13,6 +13,18 @@ class Fruit extends Model {
   }
 }
 
+class Vegetable extends Model {
+  static database = database;
+
+  static tableName = 'cache_vegetable';
+
+  static columns = {
+    name: { type: String },
+  }
+}
+
+const Mixed = new MixedModel([Fruit, Vegetable]);
+
 class Airplane extends Model {
   static database = database;
 
@@ -20,10 +32,12 @@ class Airplane extends Model {
 
   static columns = {
     name: { type: String },
+    fruit: { type: Fruit },
+    food: { type: Mixed },
   }
 }
 
-const Cache = new DataCache([Fruit, Airplane]);
+const Cache = new DataCache([Fruit, Airplane, Vegetable]);
 
 describe('Cache', () => {
   beforeAll(async () => {
@@ -39,17 +53,29 @@ describe('Cache', () => {
     await new Fruit().insert({ name: 'grape' });
     await new Fruit().insert({ name: 'apple' });
 
-    await database.schema.dropTableIfExists('cache_airplane');
-    await database.schema.createTable('cache_airplane', (table) => {
+    await database.schema.dropTableIfExists('cache_vegetable');
+    await database.schema.createTable('cache_vegetable', (table) => {
       table.increments();
       table.string('name');
       table.timestamps();
       table.datetime('deleted_at');
     });
 
+    await new Vegetable().insert({ name: 'turnip' });
+
+    await database.schema.dropTableIfExists('cache_airplane');
+    await database.schema.createTable('cache_airplane', (table) => {
+      table.increments();
+      table.string('name');
+      table.integer('fruit');
+      table.string('food');
+      table.timestamps();
+      table.datetime('deleted_at');
+    });
+
     await new Airplane().insert({ name: 'Airbus A380' });
-    await new Airplane().insert({ name: 'Airbus A330' });
-    await new Airplane().insert({ name: 'Boeing 777-300ER' });
+    await new Airplane().insert({ name: 'Airbus A330', fruit: 1, food: Vegetable.toGlobalId('1') });
+    await new Airplane().insert({ name: 'Boeing 777-300ER', fruit: 1, food: Vegetable.toGlobalId('1') });
   });
 
   describe('update cache', () => {
@@ -137,20 +163,37 @@ describe('Cache', () => {
       expect(client).toHaveBeenCalledTimes(2);
     });
 
-    it('successfully model load', async () => {
+    it('successfully loadModel', async () => {
       const cache = new Cache();
       const { fruit } = cache;
 
-      fruit.id = '1';
-      await expect(fruit.load())
-        .resolves.toEqual(expect.objectContaining({ name: 'banana' }));
+      await expect(fruit.loadModel(Airplane, '1'))
+        .resolves.toEqual(expect.objectContaining({ name: 'Airbus A380' }));
       expect(client).toHaveBeenCalledTimes(1);
 
-      await expect(cache.load(Fruit.toGlobalId('1')))
-        .resolves.toEqual(expect.objectContaining({ name: 'banana' }));
-
+      await expect(fruit.loadModel(Airplane, Airplane.toGlobalId('1')))
+        .resolves.toEqual(expect.objectContaining({ name: 'Airbus A380' }));
       expect(client).toMatchSnapshot();
       expect(client).toHaveBeenCalledTimes(1);
+    });
+
+    it('successfully load from columns', async () => {
+      const cache = new Cache();
+      const airplane = await cache.loadAirplane(2);
+
+      await expect(airplane.fruit)
+        .resolves.toEqual(expect.objectContaining({ name: 'banana' }));
+
+      await expect(airplane.food)
+        .resolves.toEqual(expect.objectContaining({ name: 'turnip' }));
+      expect(client).toHaveBeenCalledTimes(3);
+
+      await expect(airplane.fruit)
+        .resolves.toEqual(expect.objectContaining({ name: 'banana' }));
+      await expect(airplane.food)
+        .resolves.toEqual(expect.objectContaining({ name: 'turnip' }));
+      expect(client).toMatchSnapshot();
+      expect(client).toHaveBeenCalledTimes(3);
     });
 
     it('check type', async () => {

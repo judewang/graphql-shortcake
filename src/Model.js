@@ -100,7 +100,7 @@ class Model {
   }
 
   constructor() {
-    if (this.initialize) this.initialize();
+    this.initialize();
     const handler = _.pick(this.constructor, [
       'get', 'set', 'has', 'ownKeys', 'getOwnPropertyDescriptor',
     ]);

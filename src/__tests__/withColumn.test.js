@@ -142,6 +142,7 @@ describe('Column', () => {
       aArchiveModel: user,
       aArchiveAlias: 'grape',
       aOtherPath: 20,
+      XYZ: 'error',
     });
 
     await model.save(10);

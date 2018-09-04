@@ -11,9 +11,17 @@ Array [
 
 exports[`Cache load & loadMany check type 1`] = `Array []`;
 
-exports[`Cache load & loadMany successfully model load 1`] = `
+exports[`Cache load & loadMany successfully load from columns 1`] = `
 Array [
+  "select * from cache_airplane where id in (2) and deleted_at is null",
   "select * from cache_fruit where id in (1) and deleted_at is null",
+  "select * from cache_vegetable where id in (1) and deleted_at is null",
+]
+`;
+
+exports[`Cache load & loadMany successfully loadModel 1`] = `
+Array [
+  "select * from cache_airplane where id in (1) and deleted_at is null",
 ]
 `;
 
@@ -29,6 +37,8 @@ Array [
   Airplane {
     "createdAt": null,
     "deletedAt": null,
+    "food": "iNipQvkLAKkwKj0tp2JExaZhdR",
+    "fruit": "iN7nPzjYQrQ4JQT3RnINV",
     "id": "iN8DeCoTu6HHRFcD2CVEWxUp8",
     "name": "Airbus A330",
     "updatedAt": null,
@@ -44,6 +54,8 @@ Array [
     Airplane {
       "createdAt": null,
       "deletedAt": null,
+      "food": null,
+      "fruit": null,
       "id": "iN8DeCoTu6HHRFcD2CVEWxUp7",
       "name": "Airbus A380",
       "updatedAt": null,
