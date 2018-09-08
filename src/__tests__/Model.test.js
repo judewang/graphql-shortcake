@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import database from './database';
 import Model from '..';
 
@@ -64,7 +65,7 @@ describe('model', () => {
     });
 
     it('refreshView', async () => {
-      View.refreshView();
+      _.forEach(_.range(1, 10), () => View.refreshView());
       await new Promise(resolve => setTimeout(resolve, 700));
     });
   });
