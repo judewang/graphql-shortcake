@@ -162,7 +162,7 @@ class Model {
 
   forge(attributes) {
     return invokeNull((attrs) => {
-      const values = _.get(attrs, ['previous'], attrs);
+      const values = attrs.previous || Object(attrs);
       this.current = _.cloneDeep(values);
       this.previous = values;
       return this;
@@ -172,7 +172,7 @@ class Model {
   merge(attributes) {
     return invokeNull((attrs) => {
       const { format } = this.constructor;
-      const values = format(attrs);
+      const values = format(Object(attrs));
       _.forEach([this.current, this.previous], data => _.assign(data, values));
       return this;
     }, attributes);
