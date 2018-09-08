@@ -58,6 +58,11 @@ describe('Builder', () => {
     expect(BuilderView.query.toString()).toBe('select * from "builder"');
   });
 
+  it('toSQL', () => {
+    const model = new Builder();
+    expect(String(model.toSQL())).toBe('select * from "builder" where deleted_at IS NULL');
+  });
+
   describe('table & view', () => {
     it('only table', async () => {
       expect(_.map(await new Builder().fetchAll(), 'price')).toEqual([10, 20]);
@@ -163,5 +168,12 @@ describe('Builder', () => {
     const { builder } = model;
     await expect(Builder.exec(builder)).resolves.toMatchSnapshot();
     expect(client).toMatchSnapshot();
+  });
+
+  it('limit & offset', () => {
+    const model = new Builder();
+    model.limit(10).offset(100);
+    expect(model.limit()).toBe(10);
+    expect(model.offset()).toBe(100);
   });
 });

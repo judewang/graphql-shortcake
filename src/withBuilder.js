@@ -33,7 +33,7 @@ export default (Parent) => {
       return this.database(this.tableName);
     }
 
-    static exec(builder, values) {
+    static toSQL(builder, values) {
       const { idAttribute, softDelete, database: pool } = this;
       const {
         method, table, view, join,
@@ -89,6 +89,10 @@ export default (Parent) => {
       return sql.select(_.map(select, item => pool.raw(item)));
     }
 
+    static async exec(...args) {
+      return _.map(await this.toSQL(...args), this.format);
+    }
+
     initialize() {
       super.initialize();
       this.resetBuilder();
@@ -132,20 +136,25 @@ export default (Parent) => {
       return builderTasks;
     }
 
-    get limit() {
-      return this.builderTasks.limit;
-    }
-
-    set limit(value) {
+    limit(value) {
+      if (_.isUndefined(value)) {
+        return this.builderTasks.limit;
+      }
       this.builderTasks.limit = Number(value);
+      return this;
     }
 
-    get offset() {
-      return this.builderTasks.offset;
-    }
-
-    set offset(value) {
+    offset(value) {
+      if (_.isUndefined(value)) {
+        return this.builderTasks.offset;
+      }
       this.builderTasks.offset = Number(value);
+      return this;
+    }
+
+    toSQL() {
+      const { builder } = this;
+      return this.constructor.toSQL(builder);
     }
 
     async exec(...args) {
@@ -154,13 +163,13 @@ export default (Parent) => {
     }
 
     async find() {
-      const { limit, offset } = this;
+      const { builder } = this;
+      const { limit, offset } = builder;
 
       if (limit !== 1) {
-        this.select('count(*) OVER() AS total_count');
+        builder.select.push('count(*) OVER() AS total_count');
       }
 
-      const { builder } = this;
       const collection = await this.exec(builder);
 
       const totalCount = Number(_.get(collection[0], ['totalCount'], 0));
@@ -175,19 +184,22 @@ export default (Parent) => {
 
     async insert(values, error) {
       const { builder } = this;
-      const [row] = await this.exec({ ...builder, method: 'insert' }, values);
+      builder.method = 'insert';
+      const [row] = await this.constructor.exec(builder, values);
       return assertResult(this.merge(row), error);
     }
 
     async update(changes, error) {
       const { builder } = this;
-      const [row] = await this.exec({ ...builder, method: 'update' }, changes);
+      builder.method = 'update';
+      const [row] = await this.constructor.exec(builder, changes);
       return assertResult(this.merge(row), error);
     }
 
     async delete() {
       const { builder } = this;
-      return this.exec({ ...builder, method: 'delete' });
+      builder.method = 'delete';
+      return this.constructor.exec(builder);
     }
   }
 
