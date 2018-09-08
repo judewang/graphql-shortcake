@@ -3,17 +3,17 @@
 exports[`Incrementer multiple 1`] = `
 Array [
   "select * from incrementer where id in (2) and deleted_at is null",
-  "update incrementer set total = total + 10 where deleted_at is null and id = 2 returning *",
+  "update incrementer set total = total + 10 where (id = 2) and deleted_at IS NULL returning *",
   "select * from incrementer where id in (2) and deleted_at is null",
-  "update incrementer set total = total + -5 where deleted_at is null and id = 2 returning *",
+  "update incrementer set total = total + -5 where (id = 2) and deleted_at IS NULL returning *",
 ]
 `;
 
 exports[`Incrementer single 1`] = `
 Array [
   "select * from incrementer where id in (1) and deleted_at is null",
-  "update incrementer set total = total + 10 where deleted_at is null and id = 1 returning *",
+  "update incrementer set total = total + 10 where (id = 1) and deleted_at IS NULL returning *",
   "select * from incrementer where id in (1) and deleted_at is null",
-  "update incrementer set total = total + -5 where deleted_at is null and id = 1 returning *",
+  "update incrementer set total = total + -5 where (id = 1) and deleted_at IS NULL returning *",
 ]
 `;

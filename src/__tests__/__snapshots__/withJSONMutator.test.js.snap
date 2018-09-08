@@ -3,13 +3,13 @@
 exports[`JSONMutator addKeyValue 1`] = `
 Array [
   "select * from jsonmutator where id in (1) and deleted_at is null",
-  "update jsonmutator set data = coalesce(data, '{}') || {\\"10\\":\\"xyz\\"}, updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "update jsonmutator set data = coalesce(data, '{}') || {\\"10\\":\\"xyz\\"}, updated_by = 10, updated_at = DATE where (id = 1) and deleted_at IS NULL returning *",
 ]
 `;
 
 exports[`JSONMutator delKeyValue 1`] = `
 Array [
   "select * from jsonmutator where id in (1) and deleted_at is null",
-  "update jsonmutator set data = coalesce(data, '{}') - 10, updated_by = 10, updated_at = DATE where deleted_at is null and id = 1 returning *",
+  "update jsonmutator set data = coalesce(data, '{}') - 10, updated_by = 10, updated_at = DATE where (id = 1) and deleted_at IS NULL returning *",
 ]
 `;

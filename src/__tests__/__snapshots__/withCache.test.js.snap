@@ -84,14 +84,14 @@ Array [
 exports[`Cache update cache destroy 1`] = `
 Array [
   "select * from cache_fruit where id in (4) and deleted_at is null",
-  "update cache_fruit set deleted_at = DATE where deleted_at is null and id = 4 returning *",
+  "update cache_fruit set deleted_at = DATE where (id = 4) and deleted_at IS NULL returning *",
   "select * from cache_fruit where id in (4) and deleted_at is null",
 ]
 `;
 
 exports[`Cache update cache find 1`] = `
 Array [
-  "select *, count(*) OVER() AS total_count from cache_fruit where deleted_at is null",
+  "select *, count(*) OVER() AS total_count from cache_fruit where deleted_at IS NULL",
 ]
 `;
 
@@ -104,6 +104,6 @@ Array [
 exports[`Cache update cache update 1`] = `
 Array [
   "select * from cache_fruit where id in (4) and deleted_at is null",
-  "update cache_fruit set name = lichee, updated_at = DATE where deleted_at is null and id = 4 returning *",
+  "update cache_fruit set name = lichee, updated_at = DATE where (id = 4) and deleted_at IS NULL returning *",
 ]
 `;

@@ -13,6 +13,6 @@ Array [
 exports[`Searcher update 1`] = `
 Array [
   "select * from searcher where id in (4) and deleted_at is null",
-  "update searcher set name = apple cheese cake, updated_at = DATE, keyword = apple cheese cake where deleted_at is null and id = 4 returning *",
+  "update searcher set name = apple cheese cake, updated_at = DATE, keyword = apple cheese cake where (id = 4) and deleted_at IS NULL returning *",
 ]
 `;

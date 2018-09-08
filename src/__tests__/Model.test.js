@@ -1,7 +1,7 @@
 import database from './database';
 import Model from '..';
 
-class MainModel extends Model {
+class Main extends Model {
   static database = database;
 
   static tableName = 'model';
@@ -14,8 +14,17 @@ class MainModel extends Model {
   }
 }
 
+class View extends Main {
+  static viewName = 'model_view';
+
+  static columns = {
+    name: { type: String },
+  }
+}
+
 describe('model', () => {
   beforeAll(async () => {
+    await database.raw('DROP VIEW IF EXISTS model_view');
     await database.schema.dropTableIfExists('model');
 
     await database.schema.createTable('model', (table) => {
@@ -29,33 +38,40 @@ describe('model', () => {
       table.integer('deleted_by');
     });
 
-    await new MainModel().insert({ name: 'herbivore', price: 10 });
+    await database.raw('CREATE VIEW model_view AS SELECT * FROM model');
+
+    await new Main().insert({ name: 'herbivore', price: 10 });
   });
 
   describe('static', () => {
     it('displayName', () => {
-      expect(MainModel.displayName).toBe('MainModel');
+      expect(Main.displayName).toBe('Main');
     });
 
     it('raw', () => {
-      expect(MainModel.raw('name = ?', [10]).toString()).toBe('name = 10');
+      expect(Main.raw('name = ?', [10]).toString()).toBe('name = 10');
     });
 
     it('format && signify', () => {
-      const { format, signify } = MainModel;
+      const { format, signify } = Main;
       expect(format({ is_admin: true })).toEqual({ isAdmin: true });
       expect(signify({ isAdmin: true })).toEqual({ is_admin: true });
     });
 
     it('forge', () => {
-      const model = MainModel.forge({ name: 'my name' });
+      const model = Main.forge({ name: 'my name' });
       expect(model.values).toEqual({ name: 'my name' });
+    });
+
+    it('refreshView', async () => {
+      View.refreshView();
+      await new Promise(resolve => setTimeout(resolve, 700));
     });
   });
 
   describe('prototype', () => {
     it('set', async () => {
-      const model = new MainModel({ name: 'apple', price: 20 });
+      const model = new Main({ name: 'apple', price: 20 });
       expect(model.values).toEqual({ name: 'apple', price: 20 });
 
       await model.save(60);
@@ -65,7 +81,7 @@ describe('model', () => {
     });
 
     it('isNew', () => {
-      const model = new MainModel();
+      const model = new Main();
       expect(model.isNew).toBe(true);
 
       model.id = '20';
@@ -73,13 +89,13 @@ describe('model', () => {
     });
 
     it('nativeId', async () => {
-      const model = await MainModel.load(1);
-      expect(model.id).toBe('iNe9OVLx9dUZwc9SxLDFCEkGEj');
+      const model = await Main.load(1);
+      expect(model.id).toBe('iN24bG2YWBL9lgDcmuOH');
       expect(model.nativeId).toBe('1');
     });
 
     it('clone', async () => {
-      const model = await MainModel.load(1);
+      const model = await Main.load(1);
       model.name = 'new model one';
       const replica = model.clone();
 
@@ -94,7 +110,7 @@ describe('model', () => {
     });
 
     it('merge', async () => {
-      const model = await MainModel.load(1);
+      const model = await Main.load(1);
       expect(model.values).toEqual(expect.objectContaining({ name: 'herbivore' }));
       model.merge({ name: 'lichee' });
       expect(model.previous).toEqual(expect.objectContaining({ name: 'lichee' }));
@@ -102,9 +118,9 @@ describe('model', () => {
     });
 
     it('toString', async () => {
-      const model = await MainModel.load(1);
+      const model = await Main.load(1);
       expect(Number(model)).toBe(Number.NaN);
-      expect(String(model)).toBe(MainModel.toGlobalId('1'));
+      expect(String(model)).toBe(Main.toGlobalId('1'));
     });
   });
 });

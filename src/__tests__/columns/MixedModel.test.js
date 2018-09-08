@@ -1,5 +1,5 @@
 import knex from 'knex';
-import Model, { MixedModel, toGlobalId } from '..';
+import Model, { MixedModel, toGlobalId } from '../..';
 
 const database = knex();
 
@@ -30,6 +30,12 @@ class Gift extends Model {
 const Target = new MixedModel([Product, Gift]);
 
 describe('mixed model', () => {
+  it('successfully set & get', () => {
+    const target = new Target(Product.toGlobalId('1'));
+    expect(Number(target)).toBe(Number.NaN);
+    expect(String(target)).toBe('iN2RngM3fgWTt0fzinySmNJB');
+  });
+
   describe('static', () => {
     it('load', async () => {
       await Target.load(Product.toGlobalId('1'));

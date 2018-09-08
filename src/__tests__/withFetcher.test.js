@@ -54,8 +54,8 @@ describe('Fetcher', () => {
     it('with where', async () => {
       const model = new Fetcher();
       model.where({ name: 'shortcake' });
-      model.orderBy(['createdAt']);
-      model.whereRaw('data IS NULL');
+      model.orderByAsc('createdAt');
+      model.whereNull('data');
       await model.fetch();
       expect(model.values).toMatchSnapshot();
       expect(client).toMatchSnapshot();

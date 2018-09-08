@@ -4334,9 +4334,9 @@ text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
-thelper@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/thelper/-/thelper-1.3.2.tgz#4533ea5490435d79a0c7fad607222ff045d7a563"
+thelper@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/thelper/-/thelper-1.3.4.tgz#2283bbd9f66dd0079d003dbde87b72eb91a69a62"
   dependencies:
     lodash "^4.17.10"
 

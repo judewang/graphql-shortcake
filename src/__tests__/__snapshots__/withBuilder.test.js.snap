@@ -1,0 +1,520 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Builder groupBy 1`] = `
+Array [
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 1,
+    "name": "apple",
+    "price": 10,
+    "updated_at": null,
+    "updated_by": null,
+  },
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updated_at": null,
+    "updated_by": null,
+  },
+]
+`;
+
+exports[`Builder groupBy 2`] = `
+Array [
+  "select * from builder where deleted_at IS NULL group by id, name",
+]
+`;
+
+exports[`Builder join innerJoin 1`] = `
+Array [
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "double": 20,
+    "enable": null,
+    "id": 1,
+    "name": "apple",
+    "price": 10,
+    "updated_at": null,
+    "updated_by": null,
+  },
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "double": 40,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updated_at": null,
+    "updated_by": null,
+  },
+]
+`;
+
+exports[`Builder join innerJoin 2`] = `
+Object {
+  "groupBy": Array [],
+  "join": Array [
+    Object {
+      "direction": "inner",
+      "relationalKeys": Array [
+        "builder.id",
+        "builder_view.id",
+      ],
+      "table": "builder_view",
+    },
+  ],
+  "limit": null,
+  "offset": null,
+  "orderBy": Array [],
+  "select": Array [
+    "*",
+  ],
+  "table": "builder",
+  "view": null,
+  "where": Array [],
+}
+`;
+
+exports[`Builder join innerJoin 3`] = `
+Array [
+  "select * from builder inner join builder_view on builder.id = builder_view.id where deleted_at IS NULL",
+]
+`;
+
+exports[`Builder orderByAsc & orderByDesc 1`] = `
+Array [
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 1,
+    "name": "apple",
+    "price": 10,
+    "updated_at": null,
+    "updated_by": null,
+  },
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updated_at": null,
+    "updated_by": null,
+  },
+]
+`;
+
+exports[`Builder orderByAsc & orderByDesc 2`] = `
+Array [
+  "select * from builder where deleted_at IS NULL order by id ASC, price DESC NULLS LAST",
+]
+`;
+
+exports[`Builder table & view only table 1`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from builder where deleted_at IS NULL",
+]
+`;
+
+exports[`Builder table & view table with view 1`] = `
+Array [
+  "select *, count(*) OVER() AS total_count from builder left join builder_view on builder.id = builder_view.id where deleted_at IS NULL",
+]
+`;
+
+exports[`Builder where where & orWhere 1`] = `
+Array [
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 1,
+    "name": "apple",
+    "price": 10,
+    "updated_at": null,
+    "updated_by": null,
+  },
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updated_at": null,
+    "updated_by": null,
+  },
+]
+`;
+
+exports[`Builder where where & orWhere 2`] = `
+Object {
+  "groupBy": Array [],
+  "join": Array [],
+  "limit": null,
+  "offset": null,
+  "orderBy": Array [],
+  "select": Array [
+    "*",
+  ],
+  "table": "builder",
+  "view": null,
+  "where": Array [
+    Object {
+      "column": "name",
+      "operator": "=",
+      "or": false,
+      "value": "apple",
+    },
+    Object {
+      "column": "name",
+      "operator": "=",
+      "or": true,
+      "value": "banana",
+    },
+  ],
+}
+`;
+
+exports[`Builder where where & orWhere 3`] = `
+Array [
+  "select * from builder where (name = apple or name = banana) and deleted_at IS NULL",
+]
+`;
+
+exports[`Builder where whereBetween & whereNotBetween 1`] = `
+Array [
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 1,
+    "name": "apple",
+    "price": 10,
+    "updated_at": null,
+    "updated_by": null,
+  },
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updated_at": null,
+    "updated_by": null,
+  },
+]
+`;
+
+exports[`Builder where whereBetween & whereNotBetween 2`] = `
+Object {
+  "groupBy": Array [],
+  "join": Array [],
+  "limit": null,
+  "offset": null,
+  "orderBy": Array [],
+  "select": Array [
+    "*",
+  ],
+  "table": "builder",
+  "view": null,
+  "where": Array [
+    Object {
+      "column": "price",
+      "operator": "BETWEEN",
+      "or": false,
+      "value": Array [
+        10,
+        20,
+      ],
+    },
+    Object {
+      "column": "price",
+      "operator": "NOT BETWEEN",
+      "or": false,
+      "value": Array [
+        15,
+        16,
+      ],
+    },
+    Object {
+      "column": "price",
+      "operator": "BETWEEN",
+      "or": true,
+      "value": Array [
+        40,
+        50,
+      ],
+    },
+    Object {
+      "column": "price",
+      "operator": "NOT BETWEEN",
+      "or": true,
+      "value": Array [
+        45,
+        46,
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Builder where whereBetween & whereNotBetween 3`] = `
+Array [
+  "select * from builder where (price BETWEEN 10 AND 20 and price NOT BETWEEN 15 AND 16 or price BETWEEN 40 AND 50 or price NOT BETWEEN 45 AND 46) and deleted_at IS NULL",
+]
+`;
+
+exports[`Builder where whereIn & orWhereIn 1`] = `
+Array [
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 1,
+    "name": "apple",
+    "price": 10,
+    "updated_at": null,
+    "updated_by": null,
+  },
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updated_at": null,
+    "updated_by": null,
+  },
+]
+`;
+
+exports[`Builder where whereIn & orWhereIn 2`] = `
+Object {
+  "groupBy": Array [],
+  "join": Array [],
+  "limit": null,
+  "offset": null,
+  "orderBy": Array [],
+  "select": Array [
+    "*",
+  ],
+  "table": "builder",
+  "view": null,
+  "where": Array [
+    Object {
+      "column": "id",
+      "operator": "IN",
+      "or": false,
+      "value": Array [
+        1,
+        2,
+        3,
+      ],
+    },
+    Object {
+      "column": "id",
+      "operator": "NOT IN",
+      "or": false,
+      "value": Array [
+        4,
+        5,
+        6,
+      ],
+    },
+    Object {
+      "column": "price",
+      "operator": "IN",
+      "or": true,
+      "value": Array [
+        10,
+        20,
+        30,
+      ],
+    },
+    Object {
+      "column": "price",
+      "operator": "NOT IN",
+      "or": true,
+      "value": Array [
+        40,
+        50,
+        60,
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Builder where whereIn & orWhereIn 3`] = `
+Array [
+  "select * from builder where (id = ANY([1,2,3]) and id != ANY([4,5,6]) or price = ANY([10,20,30]) or price != ANY([40,50,60])) and deleted_at IS NULL",
+]
+`;
+
+exports[`Builder where whereNull & orWhereNull 1`] = `
+Array [
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 1,
+    "name": "apple",
+    "price": 10,
+    "updated_at": null,
+    "updated_by": null,
+  },
+  Object {
+    "created_at": null,
+    "created_by": null,
+    "deleted_at": null,
+    "deleted_by": null,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updated_at": null,
+    "updated_by": null,
+  },
+]
+`;
+
+exports[`Builder where whereNull & orWhereNull 2`] = `
+Object {
+  "groupBy": Array [],
+  "join": Array [],
+  "limit": null,
+  "offset": null,
+  "orderBy": Array [],
+  "select": Array [
+    "*",
+  ],
+  "table": "builder",
+  "view": null,
+  "where": Array [
+    Object {
+      "column": "name",
+      "operator": "=",
+      "or": false,
+      "value": null,
+    },
+    Object {
+      "column": "name",
+      "operator": "!=",
+      "or": false,
+      "value": null,
+    },
+    Object {
+      "column": "price",
+      "operator": "=",
+      "or": true,
+      "value": null,
+    },
+    Object {
+      "column": "price",
+      "operator": "!=",
+      "or": true,
+      "value": null,
+    },
+  ],
+}
+`;
+
+exports[`Builder where whereNull & orWhereNull 3`] = `
+Array [
+  "select * from builder where (name IS NULL and name IS NOT NULL or price IS NULL or price IS NOT NULL) and deleted_at IS NULL",
+]
+`;
+
+exports[`Builder where whereRaw 1`] = `Array []`;
+
+exports[`Builder where whereRaw 2`] = `
+Object {
+  "groupBy": Array [],
+  "join": Array [],
+  "limit": null,
+  "offset": null,
+  "orderBy": Array [],
+  "select": Array [
+    "*",
+  ],
+  "table": "builder",
+  "view": null,
+  "where": Array [
+    Object {
+      "column": Array [
+        "enable IS TRUE",
+        undefined,
+      ],
+      "operator": "=",
+      "or": false,
+      "value": undefined,
+    },
+    Object {
+      "column": Array [
+        "enable IS FALSE",
+        undefined,
+      ],
+      "operator": "=",
+      "or": true,
+      "value": undefined,
+    },
+    Object {
+      "column": "price",
+      "operator": ">",
+      "or": false,
+      "value": 666,
+    },
+    Object {
+      "column": "price",
+      "operator": "!=",
+      "or": false,
+      "value": 999,
+    },
+  ],
+}
+`;
+
+exports[`Builder where whereRaw 3`] = `
+Array [
+  "select * from builder where (enable IS TRUE or enable IS FALSE and price > 666 and price != 999) and deleted_at IS NULL",
+]
+`;

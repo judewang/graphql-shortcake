@@ -1,6 +1,8 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_columns"] }] */
 import _ from 'lodash';
-import { thunk, assertResult, invokeNull } from 'thelper';
+import {
+  thunk, assertResult, invokeMapKeys, invokeNull,
+} from 'thelper';
 import { DateTime } from './columns';
 
 const bindType = (Type) => {
@@ -15,15 +17,11 @@ const bindMap = (handler, isArray) => {
 
 export default Parent => class Column extends Parent {
   static format(data) {
-    return _.mapKeys(data, (value, key) => _.camelCase(key));
+    return invokeMapKeys(_.camelCase, data);
   }
 
-  static signify(column) {
-    if (_.isPlainObject(column)) {
-      return _.mapKeys(column, (value, key) => _.snakeCase(key));
-    }
-    if (_.isArray(column)) return _.map(column, _.snakeCase);
-    return _.snakeCase(column);
+  static signify(data) {
+    return invokeMapKeys(_.snakeCase, data);
   }
 
   static _columns = thunk({});

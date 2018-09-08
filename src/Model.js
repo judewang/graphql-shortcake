@@ -16,6 +16,8 @@ import withLoader from './withLoader';
 import withMutator from './withMutator';
 import withSearcher from './withSearcher';
 
+const refreshViews = {};
+
 class Model {
   static database = null;
 
@@ -52,6 +54,17 @@ class Model {
     return this.name;
   }
 
+  static get refreshView() {
+    const { displayName, viewName, database } = this;
+    if (!refreshViews[displayName]) {
+      refreshViews[displayName] = _.debounce(() => {
+        database.raw(`REFRESH MATERIALIZED VIEW ${viewName};`);
+      }, 500, { maxWait: 2000 });
+    }
+
+    return refreshViews[displayName];
+  }
+
   static has(target, name) {
     return target.ownKeys.indexOf(name) > -1;
   }
@@ -67,10 +80,6 @@ class Model {
 
     return Object.getOwnPropertyDescriptor(target, name);
   }
-
-  static refreshView = _.debounce(() => {
-    this.raw(`REFRESH MATERIALIZED VIEW ${this.viewName};`);
-  }, 500, { maxWait: 2000 });
 
   static raw(...args) {
     return this.database.raw(...args);
