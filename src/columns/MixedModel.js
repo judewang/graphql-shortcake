@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { assertResult } from 'thelper';
+import { assertResult, thunk } from 'thelper';
 import Column from './Column';
 import { fromGlobalId } from '../GlobalId';
 
@@ -9,6 +9,17 @@ class MixedModel extends Column {
   [Symbol.toPrimitive](hint) {
     if (hint === 'number') return Number.NaN;
     return this.toString();
+  }
+
+  static get models() {
+    if (typeof this.model !== 'object') {
+      this.model = this.model();
+    }
+    return this.model;
+  }
+
+  static set models(data) {
+    this.model = thunk(data);
   }
 
   static async load(value, error) {
