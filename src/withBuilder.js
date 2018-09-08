@@ -193,6 +193,7 @@ export default (Parent) => {
 
   Builder.prototype.select = function queryBuilder(sql) {
     this.builderTasks.select.push(sql);
+    return this;
   };
 
   _.forEach(['join', 'innerJoin', 'leftJoin', 'rightJoin'], (name) => {
@@ -253,7 +254,7 @@ export default (Parent) => {
   _.forEach(['whereRaw', 'orWhereRaw', 'joinRaw'], (name) => {
     Builder.prototype[name] = function queryBuilder(...args) {
       const [, method] = /^(where|orWhere|join)Raw$/.exec(name);
-      this[method](new RawSQL(...args));
+      return this[method](new RawSQL(...args));
     };
   });
 
