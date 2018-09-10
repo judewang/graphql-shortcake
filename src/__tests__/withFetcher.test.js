@@ -53,7 +53,7 @@ describe('Fetcher', () => {
 
     it('with where', async () => {
       const model = new Fetcher();
-      model.where({ name: 'shortcake' });
+      model.where({ name: 'banana' });
       model.orderByAsc('createdAt');
       model.whereNull('data');
       await model.fetch();
@@ -62,33 +62,15 @@ describe('Fetcher', () => {
     });
   });
 
-  describe('saveIfNotExists', () => {
-    it('when existed', async () => {
-      const fetcher = new Fetcher({ name: 'pineapple shortcake' });
-      await expect(fetcher.saveIfNotExists(5))
-        .resolves.toEqual(expect.objectContaining({ nativeId: '1' }));
-      expect(client).toMatchSnapshot();
-      expect(client).toHaveBeenCalledTimes(1);
-    });
-
-    it('when not existed', async () => {
-      const fetcher = new Fetcher({ name: 'shortcake' });
-      await expect(fetcher.saveIfNotExists(10))
-        .resolves.toEqual(expect.objectContaining({ nativeId: '3' }));
-      expect(client).toMatchSnapshot();
-      expect(client).toHaveBeenCalledTimes(2);
-    });
-  });
-
   describe('fetchAll', () => {
     it('successfully fetch', async () => {
-      const fetcher = new Fetcher({ name: 'shortcake' });
+      const fetcher = new Fetcher({ name: 'banana' });
 
       const results = await fetcher.fetchAll();
       expect(results.totalCount).toBe(1);
       expect(results.offset).toBe(null);
       expect(results.limit).toBe(null);
-      expect(_.map(results, 'name')).toEqual(['shortcake']);
+      expect(_.map(results, 'name')).toEqual(['banana']);
       expect(client).toMatchSnapshot();
     });
 
@@ -106,8 +88,8 @@ describe('Fetcher', () => {
     it('offset and first', async () => {
       const fetcher = new Fetcher();
       const results = await fetcher.fetchPage({ offset: 1, first: 2 });
-      expect(results).toEqual(expect.objectContaining({ totalCount: 3, offset: 1, limit: 2 }));
-      expect(_.map(results, 'name')).toEqual(['banana', 'shortcake']);
+      expect(results).toEqual(expect.objectContaining({ totalCount: 2, offset: 1, limit: 2 }));
+      expect(_.map(results, 'name')).toEqual(['banana']);
       expect(client).toMatchSnapshot();
       expect(client).toHaveBeenCalledTimes(1);
     });
@@ -115,9 +97,9 @@ describe('Fetcher', () => {
     it('not set', async () => {
       const model = new Fetcher();
       const results = await model.fetchPage();
-      expect(results.totalCount).toBe(3);
-      expect(results).toEqual(expect.objectContaining({ totalCount: 3, offset: 0, limit: 1000 }));
-      expect(_.map(results, 'name')).toEqual(['pineapple shortcake', 'banana', 'shortcake']);
+      expect(results.totalCount).toBe(2);
+      expect(results).toEqual(expect.objectContaining({ totalCount: 2, offset: 0, limit: 1000 }));
+      expect(_.map(results, 'name')).toEqual(['pineapple shortcake', 'banana']);
       expect(client).toMatchSnapshot();
       expect(client).toHaveBeenCalledTimes(1);
     });

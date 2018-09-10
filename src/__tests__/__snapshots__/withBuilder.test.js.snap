@@ -85,6 +85,7 @@ Object {
   "select": Array [
     "*",
   ],
+  "skipLocked": false,
   "table": "builder",
   "view": null,
   "where": Array [],
@@ -183,6 +184,7 @@ Object {
   "select": Array [
     "*",
   ],
+  "skipLocked": false,
   "table": "builder",
   "view": null,
   "where": Array [
@@ -247,6 +249,7 @@ Object {
   "select": Array [
     "*",
   ],
+  "skipLocked": false,
   "table": "builder",
   "view": null,
   "where": Array [
@@ -335,6 +338,7 @@ Object {
   "select": Array [
     "*",
   ],
+  "skipLocked": false,
   "table": "builder",
   "view": null,
   "where": Array [
@@ -427,6 +431,7 @@ Object {
   "select": Array [
     "*",
   ],
+  "skipLocked": false,
   "table": "builder",
   "view": null,
   "where": Array [
@@ -476,6 +481,7 @@ Object {
   "select": Array [
     "*",
   ],
+  "skipLocked": false,
   "table": "builder",
   "view": null,
   "where": Array [

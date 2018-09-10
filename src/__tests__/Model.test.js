@@ -18,6 +18,8 @@ class Main extends Model {
 class View extends Main {
   static viewName = 'model_view';
 
+  static hasOperator = false;
+
   static columns = {
     name: { type: String },
   }
@@ -62,6 +64,26 @@ describe('model', () => {
     it('forge', () => {
       const model = Main.forge({ name: 'my name' });
       expect(model.values).toEqual({ name: 'my name' });
+    });
+
+    describe('assertOperator', () => {
+      it('hasOperator', () => {
+        expect(() => Main.assertOperator())
+          .toThrowError(new Error('operator is required'));
+        expect(Main.assertOperator('10', Error))
+          .toEqual(['10', Error]);
+        expect(Main.assertOperator({ nativeId: '10' }, Error))
+          .toEqual(['10', Error]);
+      });
+
+      it('not hasOperator', () => {
+        expect(() => View.assertOperator())
+          .not.toThrowError();
+        expect(View.assertOperator(Error))
+          .toEqual([null, Error]);
+        expect(View.assertOperator(Error))
+          .toEqual([null, Error]);
+      });
     });
 
     it('refreshView', async () => {

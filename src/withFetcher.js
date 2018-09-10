@@ -5,9 +5,7 @@ export default Parent => class Fetcher extends Parent {
   async fetch(error) {
     this.limit(1);
     const results = await this.find();
-
-    assertResult(results[0], error);
-    return results[0] ? this.forge(results[0]) : null;
+    return assertResult(this.forge(results[0] || null), error);
   }
 
   async fetchAll(error) {
@@ -19,8 +17,7 @@ export default Parent => class Fetcher extends Parent {
 
   async fetchPage(options, error) {
     const { offset, first } = _.defaults(options, { offset: 0, first: 1000 });
-    this.offset(offset);
-    this.limit(first);
+    this.limit(first).offset(offset);
     return this.fetchAll(error);
   }
 

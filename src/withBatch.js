@@ -6,7 +6,7 @@ export default Parent => class Builder extends Parent {
 
     let data = _.map(rows, signify);
 
-    const by = this.checkOperator(operator);
+    const [by] = this.assertOperator(operator);
     if (by) {
       data = _.map(data, row => ({ ...row, created_by: by, updated_by: by }));
     }
@@ -30,9 +30,9 @@ export default Parent => class Builder extends Parent {
 
     if (!softDelete) return mutate.delete();
 
-    const by = this.checkOperator(operator);
-
     const data = { deletedAt: new Date() };
+
+    const [by] = this.assertOperator(operator);
     if (by) data.deletedBy = by;
 
     return mutate.whereNull('deleted_at').update(this.signify(data));
@@ -47,9 +47,11 @@ export default Parent => class Builder extends Parent {
 
     const data = changes;
 
-    const by = this.checkOperator(operator);
+    const [by] = this.assertOperator(operator);
     if (by) data.updatedBy = by;
+
     if (hasTimestamps) data.updatedAt = new Date();
+
     if (softDelete) mutate.whereNull('deleted_at');
 
     return mutate.update(this.signify(data));

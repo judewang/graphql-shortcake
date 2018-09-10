@@ -34,17 +34,23 @@ export default (Parent) => {
     }
 
     static toSQL(builder, values) {
-      const { idAttribute, softDelete, database: pool } = this;
+      const {
+        idAttribute,
+        softDelete,
+        signify,
+        database: pool,
+      } = this;
       const {
         method, table, view, join,
         select, where, orderBy, groupBy,
-        limit, offset,
+        limit, offset, skipLocked,
       } = builder;
 
       const sql = pool(table);
+      const idColumn = signify(idAttribute);
 
       if (method === 'insert') {
-        return sql.insert(this.signify(values), '*');
+        return sql.insert(signify(values), '*');
       }
 
       sql.where((subsql) => {
@@ -56,27 +62,37 @@ export default (Parent) => {
             subsql[name](pool.raw(...column.valueOf()));
             return;
           }
-          subsql[name](...invokeWhere(this.signify(column), operator, value));
+          subsql[name](...invokeWhere(signify(column), operator, value));
         });
       });
       _.forEach(orderBy, ({ column, direction, nulls }) => {
-        const raw = [this.signify(column), direction];
+        const raw = [signify(column), direction];
         const nullsSQL = { FIRST: 'NULLS FIRST', LAST: 'NULLS LAST' };
         if (nullsSQL[nulls]) raw.push(nullsSQL[nulls]);
         sql.orderByRaw(raw.join(' '));
       });
-      if (limit) sql.limit(limit);
-      if (offset) sql.offset(offset);
       if (softDelete) sql.whereRaw('deleted_at IS NULL');
 
+      if (limit) sql.limit(limit);
+      if (offset) sql.offset(offset);
+
       if (method === 'delete') return sql.delete();
-      if (method === 'update') return sql.update(this.signify(values)).returning('*');
+      if (method === 'update') {
+        if (limit) {
+          sql.select(idColumn);
+          const forUpdate = `FOR UPDATE${skipLocked ? ' SKIP LOCKED' : ''}`;
+          return pool(table)
+            .whereRaw(`${idColumn} IN (${sql} ${forUpdate})`)
+            .update(this.signify(values))
+            .returning('*');
+        }
+        return sql.update(this.signify(values)).returning('*');
+      }
 
       if (_.size(groupBy)) sql.groupBy(...groupBy);
 
       if (view) {
-        const id = this.signify(idAttribute);
-        sql.leftJoin(view, `${table}.${id}`, `${view}.${id}`);
+        sql.leftJoin(view, `${table}.${idColumn}`, `${view}.${idColumn}`);
       }
       _.forEach(join, ({ table: joinTable, direction, relationalKeys }) => {
         const name = `${direction}Join`;
@@ -86,6 +102,7 @@ export default (Parent) => {
         }
         sql[name](joinTable, ...relationalKeys);
       });
+
       return sql.select(_.map(select, item => pool.raw(item)));
     }
 
@@ -110,6 +127,7 @@ export default (Parent) => {
         groupBy: [],
         offset: null,
         limit: null,
+        skipLocked: false,
       };
     }
 
@@ -269,6 +287,11 @@ export default (Parent) => {
       return this[method](new RawSQL(...args));
     };
   });
+
+  Builder.prototype.skipLocked = function queryBuilder() {
+    this.builderTasks.skipLocked = true;
+    return this;
+  };
 
   return Builder;
 };

@@ -7,10 +7,10 @@ Array [
 ]
 `;
 
-exports[`Mutator destroy no operator 1`] = `
+exports[`Mutator destroy no operator and is soft delete 1`] = `
 Array [
   "insert into mutator (name) values (new logger) returning *",
-  "update mutator set deleted_at = DATE where (id = 3) and deleted_at IS NULL returning *",
+  "update mutator set deleted_at = DATE where (id = 9) and deleted_at IS NULL returning *",
 ]
 `;
 
@@ -18,6 +18,34 @@ exports[`Mutator destroy no operator and no soft delete 1`] = `
 Array [
   "select * from mutator where id in (2)",
   "delete from mutator where (id = 2)",
+]
+`;
+
+exports[`Mutator modifyIfMatches skip locked 1`] = `
+Array [
+  "update mutator set used = true, updated_by = 10, updated_at = DATE where id IN (select id from mutator where (used = false and name = 'banana') and deleted_at IS NULL limit 1 FOR UPDATE SKIP LOCKED) returning *",
+  "update mutator set used = true, updated_by = 10, updated_at = DATE where id IN (select id from mutator where (used = false and name = 'banana') and deleted_at IS NULL limit 1 FOR UPDATE SKIP LOCKED) returning *",
+]
+`;
+
+exports[`Mutator modifyIfMatches wait locked 1`] = `
+Array [
+  "update mutator set used = true, updated_by = 10, updated_at = DATE where id IN (select id from mutator where (used = false and name = 'banana') and deleted_at IS NULL limit 1 FOR UPDATE) returning *",
+  "update mutator set used = true, updated_by = 10, updated_at = DATE where id IN (select id from mutator where (used = false and name = 'banana') and deleted_at IS NULL limit 1 FOR UPDATE) returning *",
+]
+`;
+
+exports[`Mutator saveIfNotExists when existed 1`] = `
+Array [
+  "insert into mutator (created_at, created_by, name, updated_at, updated_by) values (DATE, 10, pineapple shortcake, DATE, 10) returning *",
+  "select * from mutator where (name = pineapple shortcake) and deleted_at IS NULL limit 1",
+]
+`;
+
+exports[`Mutator saveIfNotExists when not existed 1`] = `
+Array [
+  "select * from mutator where (name = shortcake) and deleted_at IS NULL limit 1",
+  "insert into mutator (created_at, created_by, name, updated_at, updated_by) values (DATE, 10, shortcake, DATE, 10) returning *",
 ]
 `;
 

@@ -1,7 +1,7 @@
 /* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["target"] }] */
 import _ from 'lodash';
 import fp from 'lodash/fp';
-import { invokeNull } from 'thelper';
+import { invokeNull, assertResult } from 'thelper';
 import withArrayMutator from './withArrayMutator';
 import withBuilder from './withBuilder';
 import withBatch from './withBatch';
@@ -94,11 +94,11 @@ class Model {
     return _.get(model, ['nativeId'], model);
   }
 
-  static checkOperator(operator) {
+  static assertOperator(operator, ...args) {
     const { hasOperator } = this;
-    if (!hasOperator) return null;
-    if (!operator) throw new Error('operator is required');
-    return this.fromModel(operator);
+    if (!hasOperator) return [null, operator, ...args];
+    assertResult(operator, new Error('operator is required'));
+    return [this.fromModel(operator), ...args];
   }
 
   [Symbol.toStringTag] = 'Model';

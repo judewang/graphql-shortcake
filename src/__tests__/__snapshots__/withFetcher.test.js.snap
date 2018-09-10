@@ -20,17 +20,29 @@ Array [
 ]
 `;
 
-exports[`Fetcher fetch with where 1`] = `Object {}`;
+exports[`Fetcher fetch with where 1`] = `
+Object {
+  "createdAt": null,
+  "createdBy": null,
+  "data": null,
+  "deletedAt": null,
+  "deletedBy": null,
+  "id": 2,
+  "name": "banana",
+  "updatedAt": null,
+  "updatedBy": null,
+}
+`;
 
 exports[`Fetcher fetch with where 2`] = `
 Array [
-  "select * from fetcher where (name = shortcake and data IS NULL) and deleted_at IS NULL order by created_at ASC limit 1",
+  "select * from fetcher where (name = banana and data IS NULL) and deleted_at IS NULL order by created_at ASC limit 1",
 ]
 `;
 
 exports[`Fetcher fetchAll successfully fetch 1`] = `
 Array [
-  "select *, count(*) OVER() AS total_count from fetcher where (name = shortcake) and deleted_at IS NULL",
+  "select *, count(*) OVER() AS total_count from fetcher where (name = banana) and deleted_at IS NULL",
 ]
 `;
 
@@ -49,18 +61,5 @@ Array [
 exports[`Fetcher fetchPage offset and first 1`] = `
 Array [
   "select *, count(*) OVER() AS total_count from fetcher where deleted_at IS NULL limit 2 offset 1",
-]
-`;
-
-exports[`Fetcher saveIfNotExists when existed 1`] = `
-Array [
-  "select * from fetcher where (name = pineapple shortcake) and deleted_at IS NULL limit 1",
-]
-`;
-
-exports[`Fetcher saveIfNotExists when not existed 1`] = `
-Array [
-  "select * from fetcher where (name = shortcake) and deleted_at IS NULL limit 1",
-  "insert into fetcher (created_at, created_by, name, updated_at, updated_by) values (DATE, 10, shortcake, DATE, 10) returning *",
 ]
 `;
