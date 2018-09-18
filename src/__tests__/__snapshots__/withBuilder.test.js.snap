@@ -392,6 +392,60 @@ Array [
 ]
 `;
 
+exports[`Builder where whereIn with Model 1`] = `
+Array [
+  Object {
+    "createdAt": null,
+    "createdBy": null,
+    "deletedAt": null,
+    "deletedBy": null,
+    "enable": null,
+    "id": 2,
+    "name": "banana",
+    "price": 20,
+    "updatedAt": null,
+    "updatedBy": null,
+  },
+]
+`;
+
+exports[`Builder where whereIn with Model 2`] = `
+Object {
+  "groupBy": Array [],
+  "join": Array [],
+  "limit": null,
+  "offset": null,
+  "orderBy": Array [],
+  "select": Array [
+    "*",
+  ],
+  "skipLocked": false,
+  "table": "builder",
+  "view": null,
+  "where": Array [
+    Object {
+      "column": "id",
+      "operator": "IN",
+      "or": false,
+      "value": Builder {
+        "createdAt": null,
+        "deletedAt": null,
+        "id": null,
+        "name": null,
+        "price": 20,
+        "updatedAt": null,
+      },
+    },
+  ],
+}
+`;
+
+exports[`Builder where whereIn with Model 3`] = `
+Array [
+  "select * from builder where (id = ANY(select id from builder where (price = 20) and deleted_at IS NULL)) and deleted_at IS NULL",
+]
+`;
+
 exports[`Builder where whereNull & orWhereNull 1`] = `
 Array [
   Object {

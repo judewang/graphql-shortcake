@@ -60,7 +60,7 @@ describe('Builder', () => {
 
   it('toSQL', () => {
     const model = new Builder();
-    expect(String(model.toSQL())).toBe('select * from "builder" where deleted_at IS NULL');
+    expect(String(model.toSQL())).toBe('select id from "builder" where deleted_at IS NULL');
   });
 
   describe('table & view', () => {
@@ -105,6 +105,18 @@ describe('Builder', () => {
       model.whereNotIn('id', [4, 5, 6]);
       model.orWhereIn('price', [10, 20, 30]);
       model.orWhereNotIn('price', [40, 50, 60]);
+
+      const { builder } = model;
+      await expect(Builder.exec(builder)).resolves.toMatchSnapshot();
+      expect(builder).toMatchSnapshot();
+      expect(client).toMatchSnapshot();
+    });
+
+    it('whereIn with Model', async () => {
+      const model = new Builder();
+
+      const whereIn = new Builder({ price: 20 });
+      model.whereIn('id', whereIn);
 
       const { builder } = model;
       await expect(Builder.exec(builder)).resolves.toMatchSnapshot();
