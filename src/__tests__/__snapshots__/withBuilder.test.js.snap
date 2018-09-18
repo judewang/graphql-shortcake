@@ -427,14 +427,10 @@ Object {
       "column": "id",
       "operator": "IN",
       "or": false,
-      "value": Builder {
-        "createdAt": null,
-        "deletedAt": null,
-        "id": null,
-        "name": null,
-        "price": 20,
-        "updatedAt": null,
-      },
+      "value": Array [
+        "select id from \\"builder\\" where (price = 20) and deleted_at IS NULL",
+        Array [],
+      ],
     },
   ],
 }
@@ -542,7 +538,7 @@ Object {
     Object {
       "column": Array [
         "enable IS TRUE",
-        undefined,
+        Array [],
       ],
       "operator": "=",
       "or": false,
@@ -551,7 +547,7 @@ Object {
     Object {
       "column": Array [
         "enable IS FALSE",
-        undefined,
+        Array [],
       ],
       "operator": "=",
       "or": true,

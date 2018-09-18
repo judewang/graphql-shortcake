@@ -62,9 +62,9 @@ export default (Parent) => {
             subsql[name](pool.raw(...column.valueOf()));
             return;
           }
-          if (value instanceof Parent) {
+          if (value instanceof RawSQL) {
             const [raw] = invokeWhere(signify(column), operator, 'RawSQL');
-            subsql[name](raw.replace('?', value.toSQL()));
+            subsql[name](raw.replace('?', pool.raw(...value.valueOf())));
             return;
           }
           subsql[name](...invokeWhere(signify(column), operator, value));
@@ -175,11 +175,12 @@ export default (Parent) => {
       return this;
     }
 
-    toSQL() {
+    toSQL(column) {
       const { builder } = this;
       const { idAttribute, signify } = this.constructor;
-      builder.select = [signify(idAttribute)];
-      return this.constructor.toSQL(builder);
+      builder.select = [signify(column || idAttribute)];
+      const sql = this.constructor.toSQL(builder);
+      return new RawSQL(sql.toString());
     }
 
     async exec(...args) {

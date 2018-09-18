@@ -5,7 +5,7 @@ export default class RawSQL {
   }
 
   valueOf() {
-    return [this.sql, this.values];
+    return [this.sql, this.values || []];
   }
 
   toJSON() {
