@@ -15,7 +15,7 @@ class User extends Model {
   }
 }
 
-class Member extends Model {
+class Member extends User {
   static database = database;
 
   static columns = {

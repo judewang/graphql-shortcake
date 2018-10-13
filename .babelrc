@@ -1,6 +1,8 @@
 {
-  "presets": ["react-native"],
+  "presets": [["next/babel", { "preset-env": { "modules": "commonjs" } }]],
   "plugins": [
-    ["lodash", { "id": ["lodash", "thelper"] }]
+    ["lodash", { "id": ["lodash", "thelper"] }],
+    ["@babel/plugin-proposal-pipeline-operator", { "proposal": "minimal" }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }]
   ]
 }

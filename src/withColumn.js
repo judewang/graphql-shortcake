@@ -51,7 +51,7 @@ export default Parent => class Column extends Parent {
     );
 
     this._columns = _.mapValues(columns, ({ type, paths, name }, key) => {
-      assertResult(type, new TypeError(`${key} type of column is required`));
+      assertResult(type, new TypeError(`[${this.displayName}] ${key} type of column is required`));
       const Type = type[0] || type;
       const isArray = _.isArray(type);
       const toType = bindType(Type);

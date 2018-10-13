@@ -44,10 +44,11 @@ class Model {
   static set(target, name, value) {
     if (this.has(target, name)) {
       target.set(name, value);
-      return;
+      return true;
     }
 
     target[name] = value;
+    return true;
   }
 
   static get displayName() {
